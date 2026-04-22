@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Simulador de Negociação</title>
+<title>Brascof · Simulador de Negociação</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -279,8 +279,13 @@ select option{background:var(--surface2);color:var(--text)}
   </div>
 
   <!-- PREÇOS -->
-  <div class="sec">Preços de Referência</div>
-  <div class="rg rg-3">
+  <details style="margin-bottom:1.25rem">
+    <summary style="cursor:pointer;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);display:flex;align-items:center;gap:10px;list-style:none;padding:.5rem 0">
+      <span>Preços de Referência</span>
+      <span style="margin-left:auto;font-size:14px">▾</span>
+      <span style="flex:1;height:1px;background:var(--border);margin-left:0"></span>
+    </summary>
+  <div class="rg rg-3" style="margin-top:.75rem">
     <div class="rcard">
       <div class="rlbl">Exportável FOB Cost (USD/saca)</div>
       <div class="rval c-gold" id="o-expfob">—</div>
@@ -314,9 +319,15 @@ select option{background:var(--surface2);color:var(--text)}
       <div class="runit">lotes hedge</div>
     </div>
   </div>
+  </details>
 
   <!-- CUSTOS DETALHADOS -->
-  <div class="sec">Detalhamento Completo — Referência Pricing</div>
+  <details style="margin-bottom:1.25rem">
+    <summary style="cursor:pointer;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);display:flex;align-items:center;gap:10px;list-style:none;padding:.5rem 0">
+      <span>Detalhamento Completo — Referência Pricing</span>
+      <span style="margin-left:auto;font-size:14px;transition:transform .2s" class="det-arrow">▾</span>
+      <span style="flex:1;height:1px;background:var(--border);margin-left:0"></span>
+    </summary>
   <table class="stbl">
     <tr><td colspan="2" style="color:var(--gold-dim);font-size:10px;letter-spacing:.1em;padding-top:.75rem;padding-bottom:.25rem">COMPRA (Pricing D17–D22)</td></tr>
     <tr><td style="color:var(--muted)">BRL Price Bica / 60kg</td><td id="t-brl">—</td></tr>
@@ -360,6 +371,8 @@ select option{background:var(--surface2);color:var(--text)}
     <tr><td style="color:var(--muted)">F41 · 14/16 Diff (replacement)</td><td id="t-f41">—</td></tr>
     <tr><td style="color:var(--muted)">F44 · Bica Diff</td><td id="t-f44">—</td></tr>
   </table>
+
+  </details>
 
   <!-- RESUMO -->
   <div class="sec">Resumo da Negociação</div>
