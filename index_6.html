@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brascof · Simulador de Negociação</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0e0c;--surface:#181714;--surface2:#211f1b;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --gold:#c8a96e;--gold-dim:#8a7148;--gold-glow:rgba(200,169,110,0.15);
+  --text:#ede8df;--muted:#7a7368;--muted2:#534f47;
+  --neg:#c0614a;--pos:#6a9e6a;--info:#5b8db8;
+  --mono:'DM Mono',monospace;--serif:'Fraunces',serif;
+}
+html{font-size:15px}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;padding:2.5rem 1.25rem 5rem;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E")}
+body::after{content:'';position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,var(--gold) 40%,var(--gold) 60%,transparent 100%);opacity:.55}
+.page{max-width:900px;margin:0 auto;position:relative;z-index:1}
+
+header{text-align:center;margin-bottom:2.5rem;animation:fadeUp .6s ease both}
+.eyebrow{font-size:10px;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:.9rem;display:flex;align-items:center;justify-content:center;gap:12px}
+.eyebrow::before,.eyebrow::after{content:'';display:block;height:1px;width:36px;background:var(--gold-dim)}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.1;margin-bottom:.3rem}
+h1 em{font-style:italic;color:var(--gold)}
+.subtitle{font-size:11px;color:var(--muted);letter-spacing:.06em}
+
+.tabs{display:flex;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:2rem;animation:fadeUp .6s .05s ease both}
+.tab-btn{flex:1;background:transparent;border:none;border-radius:8px;padding:.6rem .5rem;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--muted);cursor:pointer;transition:background .2s,color .2s;text-transform:uppercase;line-height:1.4}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{background:var(--surface2);color:var(--gold);border:1px solid var(--border2)}
+.panel{display:none}.panel.active{display:block;animation:fadeUp .35s ease both}
+
+.sec{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);margin:0 0 .75rem;display:flex;align-items:center;gap:10px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.ig{display:grid;gap:10px;margin-bottom:1.25rem}
+.ig-2{grid-template-columns:repeat(2,1fr)}
+.ig-3{grid-template-columns:repeat(3,1fr)}
+.ig-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:620px){.ig-3,.ig-4{grid-template-columns:repeat(2,1fr)}.ig-2{grid-template-columns:1fr}}
+
+.icard{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:.9rem .85rem;transition:border-color .2s,box-shadow .2s}
+.icard:focus-within{border-color:var(--gold-dim);box-shadow:0 0 0 3px var(--gold-glow)}
+.ilabel{font-size:10px;letter-spacing:.13em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;display:block}
+.irow{display:flex;align-items:baseline;gap:4px}
+.ipfx{font-size:10px;color:var(--muted);flex-shrink:0}
+.ibadge{font-size:11px;color:var(--gold);margin-top:5px;display:block;letter-spacing:.04em}
+
+input[type=number]{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:16px;font-weight:500;width:100%;-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=text],input[type=date]{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:16px;font-weight:500;width:100%}
+input[type=date]{color-scheme:dark}
+input::placeholder{color:var(--muted2)}
+select{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:14px;font-weight:500;width:100%;cursor:pointer}
+select option{background:var(--surface2);color:var(--text)}
+
+.div{display:flex;align-items:center;gap:10px;margin:1rem 0}
+.div::before,.div::after{content:'';flex:1;height:1px;background:var(--border)}
+.div span{font-size:10px;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase}
+
+.steps{display:flex;flex-direction:column;gap:2px;margin-bottom:1.25rem}
+.step{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.75rem 1rem;display:grid;grid-template-columns:1.6rem 1fr auto auto;align-items:center;gap:10px}
+@media(max-width:550px){.step{grid-template-columns:1.6rem 1fr auto}.sfml{display:none}}
+.sn{font-size:10px;color:var(--gold-dim);letter-spacing:.1em}
+.slbl{font-size:11px;color:var(--muted);letter-spacing:.03em}
+.sfml{font-size:10px;color:var(--muted2);text-align:right}
+.sval{font-size:13px;font-weight:500;color:var(--text);text-align:right;min-width:115px}
+.su{font-size:9px;color:var(--muted);margin-left:2px}
+
+.rg{display:grid;gap:10px;margin-bottom:1rem}
+.rg-3{grid-template-columns:repeat(3,1fr)}
+.rg-2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:600px){.rg-3{grid-template-columns:repeat(2,1fr)}}
+
+.rcard{background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:1.1rem 1rem;position:relative;overflow:hidden}
+.rcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);opacity:.45}
+.rlbl{font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:.4rem}
+.rval{font-family:var(--serif);font-size:1.65rem;font-weight:600;letter-spacing:-.02em;line-height:1}
+.runit{font-size:10px;color:var(--muted);margin-top:.25rem;letter-spacing:.08em}
+.rsub{font-size:11px;color:var(--muted2);margin-top:.3rem}
+
+.main-result{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:1.4rem 1.25rem;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;margin-bottom:1.25rem}
+.main-result::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);opacity:.5}
+.mr-lbl{font-family:var(--serif);font-weight:300;font-size:1rem;color:var(--text)}
+.mr-lbl small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:2px;font-weight:400}
+.mr-val{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.4rem);font-weight:600;letter-spacing:-.02em;text-align:right;transition:color .3s}
+.mr-unit{font-size:11px;color:var(--muted);display:block;text-align:right;margin-top:2px;letter-spacing:.08em;font-family:var(--mono)}
+
+.c-neg{color:var(--neg)}.c-pos{color:var(--pos)}.c-gold{color:var(--gold)}.c-info{color:var(--info)}
+
+.stbl{width:100%;border-collapse:collapse;margin-bottom:1.25rem}
+.stbl td{padding:.5rem .85rem;border-bottom:1px solid var(--border);font-size:12px}
+.stbl td:last-child{text-align:right;font-weight:500}
+.stbl tr:last-child td{border-bottom:none}
+.stbl .rtotal td{border-top:1px solid var(--border2);font-weight:500;color:var(--gold);padding-top:.75rem}
+
+.resumo-box{background:var(--surface);border:1px solid var(--border2);border-radius:11px;padding:1.1rem 1.25rem;margin-bottom:1.25rem;position:relative}
+.resumo-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);opacity:.45;border-radius:11px 11px 0 0}
+.resumo-text{font-size:12px;color:var(--text);line-height:1.7;letter-spacing:.02em;word-break:break-word}
+.resumo-actions{display:flex;gap:8px;margin-top:.85rem}
+.btn-copy{background:transparent;border:1px solid var(--border2);border-radius:7px;padding:.45rem 1rem;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);cursor:pointer;transition:background .2s,color .2s;text-transform:uppercase}
+.btn-copy:hover{background:var(--surface2);color:var(--gold)}
+.btn-copy.copied{color:var(--pos);border-color:var(--pos)}
+
+.footer{margin-top:2rem;text-align:center;font-size:11px;color:var(--muted2);letter-spacing:.06em}
+.footer span{color:var(--gold-dim)}
+.ts{font-size:10px;color:var(--muted2);text-align:center;margin-top:.3rem;letter-spacing:.1em}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="eyebrow">ICE Futures U.S. · Contrato C</div>
+  <h1>Brascof · Simulador de <em>Negociação</em></h1>
+  <p class="subtitle">Bica corrida — precificação completa para exportação</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab(0)">Precificação Completa</button>
+  <button class="tab-btn" onclick="switchTab(1)">Preço R$ → Diff</button>
+  <button class="tab-btn" onclick="switchTab(2)">Diff → Preço R$</button>
+</div>
+
+<!-- ===== PAINEL 1: PRECIFICAÇÃO COMPLETA ===== -->
+<div class="panel active" id="panel-0">
+
+  <!-- IDENTIFICAÇÃO -->
+  <div class="sec">Identificação</div>
+  <div class="ig ig-3">
+    <div class="icard">
+      <label class="ilabel" for="i-producer">Produtor</label>
+      <input type="text" id="i-producer" placeholder="Ex: SCHMITT" oninput="calc()">
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="i-broker-name">Corretor</label>
+      <input type="text" id="i-broker-name" placeholder="Ex: VB" oninput="calc()">
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="i-quality">Qualidade</label>
+      <input type="text" id="i-quality" placeholder="Ex: BC2" oninput="calc()">
+    </div>
+  </div>
+  <div class="ig ig-3">
+    <div class="icard">
+      <label class="ilabel" for="i-crop">Safra</label>
+      <input type="text" id="i-crop" placeholder="Ex: 26/27" oninput="calc()">
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="i-date">Data Retirada</label>
+      <input type="date" id="i-date" oninput="calc()">
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="i-paydate">Data Pagamento</label>
+      <input type="date" id="i-paydate" oninput="calc()">
+    </div>
+  </div>
+
+  <!-- DATA — mesma ordem da planilha -->
+  <div class="sec">Data</div>
+  <div class="ig ig-4">
+    <div class="icard">
+      <label class="ilabel" for="v-bags">Bags</label>
+      <div class="irow"><input type="number" id="v-bags" value="500" step="1" min="1" oninput="calc()"></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="v-preco">BRL Price Bica / 60kg</label>
+      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-preco" value="1930" step="1" min="0" oninput="calc()"></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="v-dolar">USD BRL</label>
+      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-dolar" value="4.992" step="0.0001" min="0.0001" oninput="calc()"></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="v-kc">KC (Tela NY)</label>
+      <div class="irow"><input type="number" id="v-kc" value="303.8" step="0.05" min="0" oninput="calc()"><span class="ipfx">cts/lb</span></div>
+    </div>
+  </div>
+  <div class="ig ig-4">
+    <div class="icard">
+      <label class="ilabel" for="v-p1718">17/18%</label>
+      <div class="irow"><input type="number" id="v-p1718" value="20" step="1" min="0" max="100" oninput="calc()"><span class="ipfx">%</span></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="v-premio">Prêmio</label>
+      <div class="irow"><input type="number" id="v-premio" value="12" step="0.5" oninput="calc()"><span class="ipfx">cts/lb</span></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="v-off">Offgrades %</label>
+      <div class="irow"><input type="number" id="v-off" value="20" step="0.5" min="0" max="100" oninput="calc()"><span class="ipfx">%</span></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="v-fm">Foreign Matter %</label>
+      <div class="irow"><input type="number" id="v-fm" value="0.5" step="0.1" min="0" oninput="calc()"><span class="ipfx">%</span></div>
+    </div>
+  </div>
+  <div class="ig ig-4">
+    <div class="icard">
+      <label class="ilabel" for="v-producer">Producer? (Y/N)</label>
+      <select id="v-producer" onchange="calc()">
+        <option value="N">N</option>
+        <option value="Y">Y</option>
+      </select>
+    </div>
+    <div class="icard" style="grid-column:span 2">
+      <label class="ilabel" for="v-cidade">Freight — Cidade</label>
+      <select id="v-cidade" onchange="calc()"></select>
+      <span class="ibadge" id="v-frete-badge">R$ —</span>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="v-broker">Broker (Y/N)</label>
+      <select id="v-broker" onchange="calc()">
+        <option value="Y">Y</option>
+        <option value="N">N</option>
+      </select>
+    </div>
+  </div>
+  <div class="ig ig-2">
+    <div class="icard">
+      <label class="ilabel" for="v-extra">Extra Costs (+) / Savings (−) R$</label>
+      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-extra" value="0" step="1" oninput="calc()"></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="v-ciclo">Ciclo de Estoque (dias)</label>
+      <div class="irow"><input type="number" id="v-ciclo" value="30" step="1" min="1" oninput="calc()"><span class="ipfx">dias</span></div>
+    </div>
+  </div>
+
+  <!-- LOW GRADE INPUTS -->
+  <div class="sec">Low Grade</div>
+  <div class="ig ig-4">
+    <div class="icard">
+      <label class="ilabel" for="v-lg-direto">Low Grade BRL/bag <span style="color:var(--gold-dim)">(direto)</span></label>
+      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-lg-direto" value="" step="1" min="0" placeholder="ou use catação →" oninput="calc()"></div>
+      <span class="ibadge" id="o-lg-auto" style="color:var(--muted)"></span>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="v-grinders-diff">Grinders Diff <span style="color:var(--muted2)">(catação)</span></label>
+      <div class="irow"><input type="number" id="v-grinders-diff" value="" step="1" placeholder="-58" oninput="calc()"><span class="ipfx">cts/lb</span></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="v-fundo-rs">Fundo <span style="color:var(--muted2)">(catação)</span></label>
+      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-fundo-rs" value="" step="5" min="0" placeholder="530" oninput="calc()"></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="v-def1500-rs">1500 Def <span style="color:var(--muted2)">(catação)</span></label>
+      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-def1500-rs" value="" step="5" min="0" placeholder="530" oninput="calc()"></div>
+    </div>
+  </div>
+
+  <div class="div"><span>Resultados</span></div>
+
+  <!-- DIFFS -->
+  <div class="sec">Diferenciais</div>
+  <div class="rg rg-3">
+    <div class="rcard">
+      <div class="rlbl">Bica Diff</div>
+      <div class="rval" id="o-bicadiff">—</div>
+      <div class="runit">cts / libra</div>
+    </div>
+    <div class="rcard">
+      <div class="rlbl">14/16 Diff</div>
+      <div class="rval" id="o-d1416">—</div>
+      <div class="runit">cts / libra</div>
+      <div class="rsub" id="o-d1416net"></div>
+    </div>
+    <div class="rcard">
+      <div class="rlbl">17/18 Diff</div>
+      <div class="rval" id="o-d1718">—</div>
+      <div class="runit">cts / libra</div>
+      <div class="rsub" id="o-d1718net"></div>
+    </div>
+  </div>
+
+  <!-- PREÇOS -->
+  <div class="sec">Preços de Referência</div>
+  <div class="rg rg-3">
+    <div class="rcard">
+      <div class="rlbl">Exportável FOB Cost (USD/saca)</div>
+      <div class="rval c-gold" id="o-expfob">—</div>
+      <div class="runit">USD / saca 60kg</div>
+    </div>
+    <div class="rcard">
+      <div class="rlbl">Exportável FOB (cts/lb)</div>
+      <div class="rval" id="o-expcts">—</div>
+      <div class="runit">cts / libra</div>
+    </div>
+    <div class="rcard">
+      <div class="rlbl">Bica FOT (cts/lb)</div>
+      <div class="rval" id="o-bicafot">—</div>
+      <div class="runit">cts / libra</div>
+    </div>
+  </div>
+  <div class="rg rg-3">
+    <div class="rcard">
+      <div class="rlbl">Low Grade FOB Equiv. (USD/saca)</div>
+      <div class="rval c-info" id="o-lgfob">—</div>
+      <div class="runit">USD / saca</div>
+    </div>
+    <div class="rcard">
+      <div class="rlbl">14/16 % (calculado)</div>
+      <div class="rval" id="o-p1416">—</div>
+      <div class="runit">% da bica</div>
+    </div>
+    <div class="rcard">
+      <div class="rlbl">NY Lots</div>
+      <div class="rval c-info" id="o-nylots">—</div>
+      <div class="runit">lotes hedge</div>
+    </div>
+  </div>
+
+  <!-- CUSTOS DETALHADOS -->
+  <div class="sec">Detalhamento Completo — Referência Pricing</div>
+  <table class="stbl">
+    <tr><td colspan="2" style="color:var(--gold-dim);font-size:10px;letter-spacing:.1em;padding-top:.75rem;padding-bottom:.25rem">COMPRA (Pricing D17–D22)</td></tr>
+    <tr><td style="color:var(--muted)">BRL Price Bica / 60kg</td><td id="t-brl">—</td></tr>
+    <tr><td style="color:var(--muted)">USD BRL (câmbio)</td><td id="t-usd">—</td></tr>
+    <tr><td style="color:var(--muted)">D17 · USD Bica Price / bag</td><td id="t-usdBica">—</td></tr>
+    <tr><td style="color:var(--muted)">D18 · ICMS Tax Credit</td><td id="t-icms">—</td></tr>
+    <tr><td style="color:var(--muted)">D19 · Frete Origem <span id="t-cidade" style="color:var(--muted2)"></span></td><td id="t-frete">—</td></tr>
+    <tr><td style="color:var(--muted)">D20 · Corretagem (broker 0,5%)</td><td id="t-broker">—</td></tr>
+    <tr><td style="color:var(--muted)">D21 · Dry Mill</td><td id="t-drymill">USD 3,0000</td></tr>
+    <tr><td style="font-weight:500">D22 · Total Purchase Cost</td><td id="t-totalc" style="font-weight:500">—</td></tr>
+
+    <tr><td colspan="2" style="color:var(--gold-dim);font-size:10px;letter-spacing:.1em;padding-top:.75rem;padding-bottom:.25rem">LOW GRADE (Pricing D24–D27)</td></tr>
+    <tr><td style="color:var(--muted)">LG BRL / bag</td><td id="t-lgbrl">—</td></tr>
+    <tr><td style="color:var(--muted)">D24 · LG USD / bag (FOT)</td><td id="t-lgusd">—</td></tr>
+    <tr><td style="color:var(--muted)">D25 · LG Sale Brokerage (0,5%)</td><td id="t-lgbrok">—</td></tr>
+    <tr><td style="color:var(--muted)">D26 · LG FOT EWH Value</td><td id="t-lgfot">—</td></tr>
+    <tr><td style="color:var(--muted)">D6  · FOB Cost / bag (porto)</td><td id="t-fobcost">—</td></tr>
+    <tr><td style="font-weight:500">D27 · LG FOB Equiv</td><td id="t-lgfob2" style="font-weight:500">—</td></tr>
+
+    <tr><td colspan="2" style="color:var(--gold-dim);font-size:10px;letter-spacing:.1em;padding-top:.75rem;padding-bottom:.25rem">MILLING LOSS (Pricing D29–D30)</td></tr>
+    <tr><td style="color:var(--muted)">Milling Loss % (fixo)</td><td>0,25%</td></tr>
+    <tr><td style="color:var(--muted)">D29 · Milling Loss Bags</td><td id="t-millbags">—</td></tr>
+    <tr><td style="color:var(--muted)">D30 · Milling Loss R$</td><td id="t-millbrl">—</td></tr>
+
+    <tr><td colspan="2" style="color:var(--gold-dim);font-size:10px;letter-spacing:.1em;padding-top:.75rem;padding-bottom:.25rem">EXPORTÁVEL (Pricing D32–D37)</td></tr>
+    <tr><td style="color:var(--muted)">Offgrades % efetivo (off − 0,25%)</td><td id="t-offeff">—</td></tr>
+    <tr><td style="color:var(--muted)">D32 · Cost após LG + Milling Loss</td><td id="t-postlg">—</td></tr>
+    <tr><td style="color:var(--muted)">D33 · Storage + Insurance</td><td id="t-storage">—</td></tr>
+    <tr><td style="color:var(--muted)">D34 · Interest (juros)</td><td id="t-juros">—</td></tr>
+    <tr><td style="color:var(--muted)">D35 · FOB Cost</td><td id="t-fob2">—</td></tr>
+    <tr><td style="color:var(--muted)">D36 · Tax Credit PIS/Cofins</td><td id="t-tax">—</td></tr>
+    <tr><td style="color:var(--muted)">Extra Costs / Savings</td><td id="t-extra">—</td></tr>
+    <tr class="rtotal"><td>D37 · Exportable FOB Cost</td><td id="t-expfobcost">—</td></tr>
+
+    <tr><td colspan="2" style="color:var(--gold-dim);font-size:10px;letter-spacing:.1em;padding-top:.75rem;padding-bottom:.25rem">DIFFS (Pricing D40–F44)</td></tr>
+    <tr><td style="color:var(--muted)">D40 · Exportável + prêmio 17/18</td><td id="t-d40">—</td></tr>
+    <tr><td style="color:var(--muted)">D41 · Exportável − prêmio 14/16</td><td id="t-d41">—</td></tr>
+    <tr><td style="color:var(--muted)">D43 · Exportável FOB (cts/lb)</td><td id="t-d43">—</td></tr>
+    <tr><td style="color:var(--muted)">D44 · Bica FOT (cts/lb)</td><td id="t-d44">—</td></tr>
+    <tr><td style="color:var(--muted)">F40 · 17/18 Diff (replacement)</td><td id="t-f40">—</td></tr>
+    <tr><td style="color:var(--muted)">F41 · 14/16 Diff (replacement)</td><td id="t-f41">—</td></tr>
+    <tr><td style="color:var(--muted)">F44 · Bica Diff</td><td id="t-f44">—</td></tr>
+  </table>
+
+  <!-- RESUMO -->
+  <div class="sec">Resumo da Negociação</div>
+  <div class="resumo-box">
+    <div class="resumo-text" id="resumo-text">Preencha os campos acima para gerar o resumo.</div>
+    <div class="resumo-actions">
+      <button class="btn-copy" id="btn-copy" onclick="copiarResumo()">Copiar texto</button>
+    </div>
+  </div>
+
+</div><!-- /panel-0 -->
+
+<!-- ===== PAINEL 2: Preço R$ → Diff ===== -->
+<div class="panel" id="panel-1">
+  <div class="ig ig-3">
+    <div class="icard">
+      <label class="ilabel" for="p1-preco">BRL Price Bica / 60kg</label>
+      <div class="irow"><span class="ipfx">R$</span><input type="number" id="p1-preco" value="1530.00" step="0.01" min="0" oninput="calcDiff()"></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="p1-dolar">USD BRL</label>
+      <div class="irow"><span class="ipfx">R$</span><input type="number" id="p1-dolar" value="5.0692" step="0.0001" min="0.0001" oninput="calcDiff()"></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="p1-tela">KC (Tela NY)</label>
+      <div class="irow"><input type="number" id="p1-tela" value="290.25" step="0.01" min="0" oninput="calcDiff()"><span class="ipfx">cts/lb</span></div>
+    </div>
+  </div>
+  <div class="div"><span>Cálculo</span></div>
+  <div class="steps">
+    <div class="step"><span class="sn">01</span><span class="slbl">Preço em dólar / saca</span><span class="sfml" id="d-f1">—</span><span class="sval" id="d-r1">—</span></div>
+    <div class="step"><span class="sn">02</span><span class="slbl">Divisão por 1,3228</span><span class="sfml" id="d-f2">—</span><span class="sval" id="d-r2">—</span></div>
+    <div class="step"><span class="sn">03</span><span class="slbl">Menos KC</span><span class="sfml" id="d-f3">—</span><span class="sval" id="d-r3">—</span></div>
+  </div>
+  <div class="main-result">
+    <div class="mr-lbl"><small>Resultado</small>Bica diff</div>
+    <div><div class="mr-val" id="d-diff">—</div><span class="mr-unit">cts / libra</span></div>
+  </div>
+</div>
+
+<!-- ===== PAINEL 3: Diff → Preço R$ ===== -->
+<div class="panel" id="panel-2">
+  <div class="ig ig-3">
+    <div class="icard">
+      <label class="ilabel" for="p2-diff">Diferencial</label>
+      <div class="irow"><input type="number" id="p2-diff" value="-62.09" step="0.01" oninput="calcPreco()"><span class="ipfx">cts/lb</span></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="p2-tela">KC (Tela NY)</label>
+      <div class="irow"><input type="number" id="p2-tela" value="290.25" step="0.01" min="0" oninput="calcPreco()"><span class="ipfx">cts/lb</span></div>
+    </div>
+    <div class="icard">
+      <label class="ilabel" for="p2-dolar">USD BRL</label>
+      <div class="irow"><span class="ipfx">R$</span><input type="number" id="p2-dolar" value="5.0692" step="0.0001" min="0.0001" oninput="calcPreco()"></div>
+    </div>
+  </div>
+  <div class="div"><span>Cálculo</span></div>
+  <div class="steps">
+    <div class="step"><span class="sn">01</span><span class="slbl">Diff + KC</span><span class="sfml" id="p-f1">—</span><span class="sval" id="p-r1">—</span></div>
+    <div class="step"><span class="sn">02</span><span class="slbl">× 1,3228 → USD/saca</span><span class="sfml" id="p-f2">—</span><span class="sval" id="p-r2">—</span></div>
+    <div class="step"><span class="sn">03</span><span class="slbl">× USD BRL → R$/saca</span><span class="sfml" id="p-f3">—</span><span class="sval" id="p-r3">—</span></div>
+  </div>
+  <div class="main-result">
+    <div class="mr-lbl"><small>Resultado</small>Preço da saca</div>
+    <div><div class="mr-val c-gold" id="p-preco">—</div><span class="mr-unit">R$ / saca 60kg</span></div>
+  </div>
+</div>
+
+<p class="footer">Fator fixo: <span>1,3228</span> &nbsp;·&nbsp; Milling Loss: <span>0,25%</span> &nbsp;·&nbsp; Dry Mill: <span>USD 3/saca</span> &nbsp;·&nbsp; Juros: <span>11% a.a.</span></p>
+<p class="ts" id="ts"></p>
+
+</div><!-- /page -->
+<script>
+/* ============================================================
+   CONSTANTES (espelham a planilha)
+   ============================================================ */
+const F          = 1.3228;
+const OVERHEAD   = 2;
+const PISCOFINS  = 0.00925;       // Finance!C5
+const STORAGE_D  = 0.0617;        // D7 — R$/dia/saca
+const CICLO_DEFAULT = 30;         // D8 — valor padrão (Pricing D8=30)
+const JUROS_AA   = 11;            // D9 — % ao ano
+const DRY_MILL   = 3;             // D24 — USD/saca
+const MILL_LOSS  = 0.0025;        // D14 — milling loss fixo (0.25%)
+// FOB costs — valores fixos em R$ com câmbio hardcoded R$5 exceto F26/F27
+const FOB_USD_5  = 5;             // câmbio hardcoded nas taxas fixas
+// Custos fixos por container (360 bags)
+const FOB_CONTAINER = 1204 + 49 + 200 + 0.13*320 + 830; // THC+Seal+Scan+Fumig+Prestack
+// Custos fixos por embarque (640 bags = 2 containers)
+const FOB_EMBARQUE  = 557 + 317 + 348 + 480 + 250 + 35 + 250; // BL+SWB+ISPS+ELF+Phyto+Mercosur+FedexDocs
+// Custos fixos por saca (320 base)
+const FOB_SACA      = 65 + 65 + 0.15*320 + 0.03*320 + 0.5*320; // Quality+Weight+ICO+ICO+Forwarder
+// Freight Santos e Packing usam câmbio atual (Data Entry C5)
+const FREIGHT_SANTOS_CONTAINER = 5590.44; // R$/container (FOB Costings D26)
+const PACKING_SACA             = 16.22;   // R$/saca (FOB Costings D27)
+
+/* Tabela de fretes — Internal Freight */
+const FRETES={
+  "POSTO":0,"ACEBURGO":8.6,"AGUANIL":6.76,"ALBERTINA":10,"ALFENAS":5.3,
+  "ALPINOPOLIS":10,"ALTEROSA":6.3,"ANDRADAS":8.3,"ARAGUARI":18,"ARAXÁ":16,
+  "ARCEBURGO":10.5,"AREADO":6.1,"BAMBUI":11.7,"BANDEIRA DO SUL":6.63,
+  "BIGUATINGA":8.9,"BOA ESPERANÇA":5.3,"BOM JESUS DA PENHA":10.85,
+  "BOM SUCESSO":7,"BORDA DA MATA":8.15,"BOTELHOS":7.3,"BRASOPOLIS":8.95,
+  "BREJATUBA":31.25,"BREJAUBINHA":30.5,"BUENO BRANDAO":9.37,"CABO VERDE":7.5,
+  "CAMACHO":9.6,"CAMBUQUIRA":5,"CAMPANHA":5,"CAMPESTRE":7,"CAMPO BELO":7,
+  "CAMPO DO MEIO":6.5,"CAMPOS GERAIS":5.5,"CANA VERDE":6.53,"CANDEIAS":7.5,
+  "CAPELINHA":18,"CAPETINGA":11.24,"CAPITOLIO":9.8,"CARMO DA CACHOEIRA":5,
+  "CARMO DA MATA":7.5,"CARMO DE MINAS":7.5,"CARMO DO PARANAIBA":15,
+  "CARMO DO RIO CLARO":7.5,"CARVALHOPOLIS":7,"CASSIA":10.5,"CAVACOS":7.23,
+  "CLARAVAL":10.5,"CONCEICAO DA APARECIDA":6.9,"CONCEICAO DO RIO VERDE":6.1,
+  "COQUEIRAL":6.5,"COROMANDEL":24,"CORREGO DO OURO":6.15,"CRISTAIS":7,
+  "DIVISA NOVA":8.8,"ELOI MENDES":4,"EUGENOPOLIS":23,"FERVEDOURO":24,
+  "FORMIGA":9,"FRANCA":14,"GUAPE":7.5,"GUARANÉSIA":8.71,"GUAXUPE":8,
+  "HELIODORA":6.5,"IBIRACI":11.35,"IBITURUNA DE MINAS":11.5,"IJACI":7.5,
+  "ILICINEA":6.8,"INCONFIDENTES":8.6,"IPUIUNA":7.9,"ITAMOGI":9,
+  "ITAÚ DE MINAS":9.71,"JACUÍ":11.5,"JACUTINGA":9.3,"JESUANIA":6.3,
+  "LAMBARI":6,"LAVRAS":6.7,"MACHADO":5.3,"MANHUAÇU":15,"MANHUMIRIM":24.5,
+  "MONSENHOR PAULO":5.2,"MONTE BELO":6.6,"MONTE CARMELO":16.5,
+  "MONTE SANTO DE MINAS":9.4,"MONTE SIÃO":9.4,"MOTE BELO":6.85,"MURIAE":22.5,
+  "MUTUM":31,"MUZAMBINHO":7.5,"NATERCIA":7.65,"NEPOMUCENO":5.79,
+  "NOVA RESENDE":8.89,"OLIVEIRA":8.65,"OURO FINO":8.89,"PALMEIRAL":8.75,
+  "PARAGUAÇU":5.09,"PASSOS":9.98,"PATOS DE MINAS":22.5,"PATROCINIO":20,
+  "PEDRALVA":8.77,"PERDOES":6.9,"PIUMHI":10.38,"POÇO FUNDO":6.1,
+  "POÇOS DE CALDAS":8.51,"RIO PARANAIBA":21,"SANTA RITA DO SAPUCAI":7.83,
+  "SANTANA DA VARGEM":5.22,"SANTO ANTONIO DO AMPARO":7.45,
+  "SÃO DOMINGO DAS DORES":31,"SÃO FRANCISCO DE PAULA":8.22,
+  "SÃO GONÇALO SAPUCAI":6.09,"SÃO GOTARGO":20.65,"SÃO JOAO DA BOA VISTA":9.63,
+  "SÃO JOÃO DA MATA":6.8,"SÃO ROQUE DE MINAS":12.7,"SÃO SEBASTIAO DA GRAMA":9.08,
+  "SÃO SEBASTIÃO DO PARAISO":10.12,"SÃO THOMÉ DAS LETRAS":7.28,
+  "SÃO TOMAS DE AQUINO":11.19,"SERRA DOS LIMA":11.36,"SERRANIA":6.51,
+  "SOCORRO - SP":10,"TRES CORAÇÕES":4.28,"TRES PONTAS":4.28,
+  "TURVOLANDIA":6.53,"VARGINHA":3.55
+};
+
+/* Popula dropdown */
+(function(){
+  const sel=document.getElementById('v-cidade');
+  Object.keys(FRETES).sort().forEach(c=>{
+    const op=document.createElement('option');
+    op.value=c; op.textContent=c;
+    if(c==='MACHADO') op.selected=true;
+    sel.appendChild(op);
+  });
+})();
+
+/* ============================================================
+   UTILITÁRIOS
+   ============================================================ */
+function fmt(n,d){return n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function sv(id,html){const e=document.getElementById(id);if(e)e.innerHTML=html}
+function cc(v){return v<0?'c-neg':'c-pos'}
+function ts(){document.getElementById('ts').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+
+/* ============================================================
+   FOB COSTS DINÂMICO — espelha FOB Costings!F1 * F
+   Todos os custos fixos usam câmbio hardcoded R$5 (FOB_USD_5)
+   F26 (Freight Santos) e F27 (Packing) usam câmbio atual (Data Entry C5)
+   ============================================================ */
+function calcFOB(usd){
+  const F5  = FOB_USD_5;
+  // Taxa por container (÷320÷F÷5)
+  const cont  = (1204 + 49 + 200 + 0.13*320 + 830) / 320 / F / F5;
+  // Taxa por embarque (÷640÷F÷5) — inclui Coffee Conditions Report (65)
+  const emb   = (557 + 317 + 348 + 480 + 250 + 35 + 65) / 640 / F / F5;
+  // Taxa por saca (÷320÷F÷5)
+  const saca  = (65 + 65 + 0.15*320 + 0.03*320 + 0.5*320 + 250) / 320 / F / F5;
+  // Fedex Docs 250 ÷320÷F÷5 (taxa por envio = por saca base)
+  // já incluído em saca acima
+  // Variáveis com câmbio atual
+  const f26   = FREIGHT_SANTOS_CONTAINER / 320 / usd / F;
+  const f27   = PACKING_SACA / F / usd;
+  return (cont + emb + saca + f26 + f27) * F;
+}
+
+/* ============================================================
+   PAINEL 1 — PRECIFICAÇÃO COMPLETA
+   Fórmulas espelham exatamente a aba Pricing da planilha atual
+   ============================================================ */
+function calc(){
+  const bags    = +document.getElementById('v-bags').value    ||500;
+  const brl     = +document.getElementById('v-preco').value   ||0;
+  const usd     = +document.getElementById('v-dolar').value   ||1;
+  const kc      = +document.getElementById('v-kc').value      ||0;
+  const p1718   = +document.getElementById('v-p1718').value   ||0;
+  const prem    = +document.getElementById('v-premio').value  ||0;
+  const off     = +document.getElementById('v-off').value     ||0;
+  const fm      = +document.getElementById('v-fm').value      ||0;
+  const producer= document.getElementById('v-producer').value==='Y';
+  const broker  = document.getElementById('v-broker').value==='Y';
+  const extra   = +document.getElementById('v-extra').value   ||0;
+  const ciclo   = +document.getElementById('v-ciclo').value   ||CICLO_DEFAULT;
+  const jurosAa = JUROS_AA;
+
+  const cidade   = document.getElementById('v-cidade').value;
+  const freteRs  = FRETES[cidade]||0;
+
+  /* D14 = milling loss fixo = 0.0025 (0.25%)
+     D13 = foreign matter = fm/100
+     D15 = offgrades_eff = C12 - D14 (em %) = off - 0.25 */
+  const fm_frac  = fm/100;
+  /* D14 = offgrades% efetivo = off (planilha usa C12 diretamente no D32)
+     D13 = offgrades% total = off (usado no D29 milling loss bags)
+     D15 = offEff = off - milling_loss para % 14/16 */
+  const offEff   = off - (MILL_LOSS*100);   // para cálculo D32
+  const p1416    = 100 - p1718 - off;        // % 14/16
+
+  /* FOB dinâmico — D6 = FOB_Costings!F1 * F */
+  const fobUsd   = calcFOB(usd);
+
+  /* D17 — USD Bica Price/bag */
+  const usdBica  = brl / usd;
+
+  /* D18 — ICMS Tax Credit */
+  const icms     = producer ? -(brl*0.01/usd*0.5) : 0;
+
+  /* D19 — Purchase Freight/bag = (D14_frete/C5) * 1.06  ← COM 1.06 */
+  const freteUsd = (freteRs / usd) * 1.06;
+
+  /* D20 — Brokerage */
+  const brokerUsd= broker ? usdBica*0.005 : 0;
+
+  /* D22 — Total Purchase Cost = SUM(D17:D21) */
+  const totalC   = usdBica + icms + freteUsd + brokerUsd + DRY_MILL;
+
+  /* LOW GRADE — modo direto (prioridade) ou calculado pelo G29
+     Modo direto: usuário digita LG em R$ (BC2, qualidades nobres)
+     Modo catação: calcula G29 com Grinders/Fundo/1500Def (BC4, BC6 etc.) */
+  const lgDiretoInput = document.getElementById('v-lg-direto').value;
+  const grInput   = document.getElementById('v-grinders-diff').value;
+  const funInput  = document.getElementById('v-fundo-rs').value;
+  const defInput  = document.getElementById('v-def1500-rs').value;
+
+  const grDiff   = grInput  !== '' ? +grInput  : -58;
+  const fundoRs  = funInput !== '' ? +funInput : 530;
+  const def1500  = defInput !== '' ? +defInput : 530;
+
+  const lgBrlCalc = (()=>{
+    const f25d = (fundoRs/F/usd) - kc;
+    const f26d = (def1500/F/usd) - kc;
+    const g30  = grDiff*0.8 + f25d*0.1 + f26d*0.1;
+    return (kc + g30 - 6.25)*F*usd;
+  })();
+
+  const lgBrl = lgDiretoInput !== '' ? +lgDiretoInput : lgBrlCalc;
+
+  const lgAutoEl = document.getElementById('o-lg-auto');
+  if(lgAutoEl){
+    if(lgDiretoInput !== ''){
+      lgAutoEl.textContent = 'LG manual · catação: R$ '+fmt(lgBrlCalc,2);
+      lgAutoEl.style.color = 'var(--gold-dim)';
+    } else if(grInput !== '' || funInput !== '' || defInput !== ''){
+      lgAutoEl.textContent = 'LG calculado: R$ '+fmt(lgBrlCalc,2);
+      lgAutoEl.style.color = 'var(--pos)';
+    } else {
+      lgAutoEl.textContent = 'preencha LG direto ou catação';
+      lgAutoEl.style.color = 'var(--muted)';
+    }
+  }
+
+  /* D24 — LG USD; D25 — LG brokerage; D26 — LG FOT; D27 — LG FOB */
+  const lgUsd    = lgBrl/usd;
+  const lgBrok   = lgUsd*0.005;
+  const lgFot    = lgUsd - lgBrok;
+  const lgFobEq  = lgFot + fobUsd;
+
+  /* D29 — Milling Loss Bags = (D13/100) * C3
+     D13 = offgrades% (só milling loss fixo 0.25% + fm)
+     Na planilha atual D13 = fm% e D14 = mill fixo (0.25%)
+     D29 = (D14/100)*C3 → apenas milling loss fixo */
+  const millBags = (MILL_LOSS)*bags;  // D29 = (D14/100)*C3 = 0.0025*bags
+  /* D30 — Milling Loss R$ */
+  const millBrl  = millBags*brl;
+
+  /* D32 — Cost after LG + Milling Loss
+     = (D22 - D27*(D14/100)) / ((100-D14)/100) + D30/F/C5/C3
+     D14 = offEff = off - 0.25 */
+  const postLg   = (totalC - lgFobEq*(offEff/100)) / ((100-offEff)/100)
+                 + millBrl/(F*usd*bags);
+
+  /* D33 — Storage = (D7/C5)*D8 */
+  const storUsd  = (STORAGE_D/usd)*ciclo;
+
+  /* D34 — Interest = D5*F*(D8/360)*(D9/100) */
+  const jurosUsd = kc*F*(ciclo/360)*(jurosAa/100);
+
+  /* D35 = fobUsd (D6) */
+
+  /* D36 — Tax Credit = (-PIS*0.7)*SUM(D32:D35) */
+  const taxCr    = -(PISCOFINS*0.7)*(postLg+storUsd+jurosUsd+fobUsd);
+
+  /* D40 — Exportable FOB Cost = SUM(D35:D39) + C16/C5 */
+  const expFobC  = postLg+storUsd+jurosUsd+fobUsd+taxCr + (extra/usd);
+
+  /* D43, D44 — 17/18 e 14/16 */
+  const exp1718  = expFobC+(prem/2*F);
+  const exp1416  = expFobC-(prem/2*F);
+
+  /* F43, F44 — diffs replacement (sem overhead) */
+  const diff1718 = (exp1718/F)-kc;
+  const diff1416 = (exp1416/F)-kc;
+
+  /* H43, H44 — net (com overhead +2) */
+  const d1718net = diff1718+OVERHEAD;
+  const d1416net = diff1416+OVERHEAD;
+
+  /* F47 — Bica diff */
+  const bicaFot  = usdBica/F;
+  const bicaDiff = bicaFot-kc;
+
+  /* D46 — Exportável FOB cts/lb */
+  const expFobCts= expFobC/F;
+
+  /* NY Lots */
+  const nyLots   = bags*((100-off)/100)/283.5;
+
+  /* ---- Renderizar ---- */
+  function setDiff(id,v,netId,netV){
+    const e=document.getElementById(id);
+    if(!e)return;
+    e.textContent=fmt(v,2);
+    e.className='rval '+cc(v);
+    if(netId){const ne=document.getElementById(netId);if(ne)ne.textContent='net: '+fmt(netV,2)+' cts/lb';}
+  }
+  setDiff('o-bicadiff',bicaDiff);
+  setDiff('o-d1416',diff1416,'o-d1416net',d1416net);
+  setDiff('o-d1718',diff1718,'o-d1718net',d1718net);
+
+  sv('o-expfob','USD '+fmt(expFobC,2));
+  const ec=document.getElementById('o-expcts');
+  if(ec){ec.textContent=fmt(expFobCts,2);ec.className='rval '+cc(expFobCts-kc);}
+  const bf=document.getElementById('o-bicafot');
+  if(bf){bf.textContent=fmt(bicaFot,2);bf.className='rval '+cc(bicaDiff);}
+  sv('o-lgfob','USD '+fmt(lgFobEq,2));
+  sv('o-p1416',fmt(p1416,2)+'%');
+  sv('o-nylots',fmt(nyLots,2));
+
+  /* Frete badge */
+  document.getElementById('v-frete-badge').textContent='R$ '+fmt(freteRs,2)+' / saca';
+  document.getElementById('t-cidade').textContent='— '+cidade;
+
+  /* Tabela detalhada — espelha Pricing linha a linha */
+  // COMPRA
+  sv('t-brl',       'R$ '+fmt(brl,2));
+  sv('t-usd',       'R$ '+fmt(usd,4));
+  sv('t-usdBica',   'USD '+fmt(usdBica,4));
+  sv('t-icms',      'USD '+fmt(icms,4));
+  sv('t-frete',     'USD '+fmt(freteUsd,4));
+  sv('t-broker',    'USD '+fmt(brokerUsd,4));
+  sv('t-totalc',    'USD '+fmt(totalC,4));
+  // LOW GRADE
+  sv('t-lgbrl',     'R$ '+fmt(lgBrl,4));
+  sv('t-lgusd',     'USD '+fmt(lgUsd,4));
+  sv('t-lgbrok',    'USD '+fmt(lgBrok,4));
+  sv('t-lgfot',     'USD '+fmt(lgFot,4));
+  sv('t-fobcost',   'USD '+fmt(fobUsd,4));
+  sv('t-lgfob2',    'USD '+fmt(lgFobEq,4));
+  // MILLING LOSS
+  sv('t-millbags',  fmt(millBags,4)+' sacas');
+  sv('t-millbrl',   'R$ '+fmt(millBrl,2));
+  // EXPORTÁVEL
+  sv('t-offeff',    fmt(offEff,2)+'%');
+  sv('t-postlg',    'USD '+fmt(postLg,4));
+  sv('t-storage',   'USD '+fmt(storUsd,4));
+  sv('t-juros',     'USD '+fmt(jurosUsd,4));
+  sv('t-fob2',      'USD '+fmt(fobUsd,4));
+  sv('t-tax',       'USD '+fmt(taxCr,4));
+  sv('t-extra',     'USD '+fmt(extra/usd,4));
+  sv('t-expfobcost','USD '+fmt(expFobC,4));
+  // DIFFS
+  sv('t-d40',  'USD '+fmt(exp1718,4));
+  sv('t-d41',  'USD '+fmt(exp1416,4));
+  sv('t-d43',  fmt(expFobCts,4)+' cts/lb');
+  sv('t-d44',  fmt(bicaFot,4)+' cts/lb');
+  const colorD={color: diff1718>=0?'var(--pos)':'var(--neg)'};
+  sv('t-f40',  '<span style="color:'+(diff1718>=0?'var(--pos)':'var(--neg)')+'">'+fmt(diff1718,4)+'</span> cts/lb');
+  sv('t-f41',  '<span style="color:'+(diff1416>=0?'var(--pos)':'var(--neg)')+'">'+fmt(diff1416,4)+'</span> cts/lb');
+  sv('t-f44',  '<span style="color:'+(bicaDiff>=0?'var(--pos)':'var(--neg)')+'">'+fmt(bicaDiff,4)+'</span> cts/lb');
+
+  gerarResumo(diff1416,diff1718);
+  ts();
+}
+
+/* ============================================================
+   RESUMO AUTOMÁTICO
+   ============================================================ */
+function gerarResumo(diff1416,diff1718){
+  const producer = document.getElementById('i-producer').value.trim();
+  const broker   = document.getElementById('i-broker-name').value.trim();
+  const quality  = document.getElementById('i-quality').value.trim();
+  const crop     = document.getElementById('i-crop').value.trim();
+  const dateVal  = document.getElementById('i-date').value;
+  const payVal   = document.getElementById('i-paydate').value;
+  const brl      = +document.getElementById('v-preco').value||0;
+  const kc       = +document.getElementById('v-kc').value||0;
+  const usd      = +document.getElementById('v-dolar').value||1;
+  const p1718    = +document.getElementById('v-p1718').value||0;
+  const off      = +document.getElementById('v-off').value||0;
+  const bags     = +document.getElementById('v-bags').value||0;
+  const cidade   = document.getElementById('v-cidade').value;
+
+  function fmtDate(v){if(!v)return'—';const[y,m,d]=v.split('-');return d+'/'+m+'/'+y;}
+
+  const p=[];
+  if(producer) p.push(producer);
+  if(broker)   p.push('Corretor: '+broker);
+  if(bags)     p.push(bags+' sacas');
+  if(quality)  p.push('de '+quality);
+  if(brl)      p.push('R$'+fmt(brl,2));
+  if(p1718)    p.push(p1718+'% de 17/18');
+  if(off)      p.push(off+'% de catação');
+  if(diff1416!==undefined) p.push('Diff 14/16: '+fmt(diff1416,2));
+  if(diff1718!==undefined) p.push('Diff 17/18: '+fmt(diff1718,2));
+  if(kc)       p.push('NY '+fmt(kc,2));
+  if(usd)      p.push('Dólar: '+fmt(usd,4));
+  if(crop)     p.push('Safra '+crop);
+  if(dateVal)  p.push('Entrega '+fmtDate(dateVal));
+  if(payVal)   p.push('Pgto '+fmtDate(payVal));
+  if(cidade)   p.push('Retirar: '+cidade);
+
+  const texto=p.join(' - ');
+  const el=document.getElementById('resumo-text');
+  if(el) el.textContent=texto||'Preencha os campos acima para gerar o resumo.';
+}
+
+function copiarResumo(){
+  const t=document.getElementById('resumo-text').textContent;
+  if(!t||t==='Preencha os campos acima para gerar o resumo.') return;
+  navigator.clipboard.writeText(t).then(()=>{
+    const b=document.getElementById('btn-copy');
+    b.textContent='Copiado!'; b.classList.add('copied');
+    setTimeout(()=>{b.textContent='Copiar texto';b.classList.remove('copied');},2000);
+  });
+}
+
+/* ============================================================
+   PAINEL 2 — Preço R$ → Diff
+   ============================================================ */
+function calcDiff(){
+  const preco=+document.getElementById('p1-preco').value||0;
+  const dolar=+document.getElementById('p1-dolar').value||1;
+  const tela =+document.getElementById('p1-tela').value||0;
+  const r1=preco/dolar, r2=r1/F, r3=r2-tela;
+  sv('d-f1',fmt(preco,2)+' ÷ '+fmt(dolar,4));
+  sv('d-r1','USD '+fmt(r1,2)+'<span class="su">/saca</span>');
+  sv('d-f2',fmt(r1,2)+' ÷ 1,3228');
+  sv('d-r2',fmt(r2,2)+'<span class="su">cts/lb</span>');
+  sv('d-f3',fmt(r2,2)+' − '+fmt(tela,2));
+  sv('d-r3',fmt(r3,2)+'<span class="su">cts/lb</span>');
+  const e=document.getElementById('d-diff');
+  e.textContent=fmt(r3,2); e.className='mr-val '+cc(r3);
+  ts();
+}
+
+/* ============================================================
+   PAINEL 3 — Diff → Preço R$
+   ============================================================ */
+function calcPreco(){
+  const diff =+document.getElementById('p2-diff').value||0;
+  const tela =+document.getElementById('p2-tela').value||0;
+  const dolar=+document.getElementById('p2-dolar').value||1;
+  const r1=diff+tela, r2=r1*F, r3=r2*dolar;
+  sv('p-f1',fmt(diff,2)+' + '+fmt(tela,2));
+  sv('p-r1',fmt(r1,2)+'<span class="su">cts/lb</span>');
+  sv('p-f2',fmt(r1,2)+' × 1,3228');
+  sv('p-r2','USD '+fmt(r2,2)+'<span class="su">/saca</span>');
+  sv('p-f3',fmt(r2,2)+' × '+fmt(dolar,4));
+  sv('p-r3','R$ '+fmt(r3,2)+'<span class="su">/saca</span>');
+  document.getElementById('p-preco').textContent='R$ '+fmt(r3,2);
+  ts();
+}
+
+function switchTab(i){
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',i===j));
+}
+
+calc(); calcDiff(); calcPreco();
+</script>
+</body>
+</html>
