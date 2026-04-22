@@ -1,1 +1,1 @@
-# Simulador-de-Negociaçoes
+# Simulador-de-Negociações
