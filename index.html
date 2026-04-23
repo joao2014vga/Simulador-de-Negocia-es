@@ -965,33 +965,27 @@ function calcPreco(){
 function switchTab(i){
   document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
   document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',i===j));
-  if(i===3) renderHist();
+  if(i===3) carregarHist();
 }
 
 /* ============================================================
-   HISTÓRICO — localStorage
+   HISTÓRICO — Google Sheets via Apps Script
    ============================================================ */
-const HIST_KEY = 'brascof_historico';
-
-function getHist(){ try{ return JSON.parse(localStorage.getItem(HIST_KEY)||'[]'); }catch(e){ return []; } }
-function saveHist(h){ localStorage.setItem(HIST_KEY, JSON.stringify(h)); }
+const API_URL = 'https://script.google.com/macros/s/AKfycbx06Yi0um4SGydvP00emw1U2bN4F6PoIpcLlPZ2WXGCrMnWF6xr5KlmQO5zxLRN1LU/exec';
 
 /* Coleta snapshot atual dos campos + resultados */
 function snapshot(){
-  const get = id => { const e=document.getElementById(id); return e ? e.value||e.textContent : ''; };
+  const get = id => { const e=document.getElementById(id); return e ? (e.value||e.textContent||'') : ''; };
   return {
     id: Date.now(),
     data: new Date().toLocaleString('pt-BR'),
-    // identificação
     produtor:  document.getElementById('i-producer').value.trim(),
     corretor:  document.getElementById('i-broker-name').value.trim(),
     quality:   document.getElementById('i-quality').value.trim(),
     safra:     document.getElementById('i-crop').value.trim(),
-    // parâmetros
     bags:      get('v-bags'), brl: get('v-preco'), usd: get('v-dolar'), kc: get('v-kc'),
     p1718:     get('v-p1718'), premio: get('v-premio'), off: get('v-off'),
     freight:   document.getElementById('v-cidade').value,
-    // resultados
     bicaDiff:  document.getElementById('o-bicadiff').textContent,
     d1416:     document.getElementById('o-d1416').textContent,
     d1718:     document.getElementById('o-d1718').textContent,
@@ -1001,8 +995,7 @@ function snapshot(){
 
 /* Modal */
 function abrirModal(){
-  const resumo = document.getElementById('resumo-text').textContent;
-  document.getElementById('modal-resumo-text').textContent = resumo;
+  document.getElementById('modal-resumo-text').textContent = document.getElementById('resumo-text').textContent;
   document.getElementById('modal-obs').value = '';
   document.querySelector('input[name="tipo"][value="simulacao"]').checked = true;
   document.getElementById('modal-overlay').classList.add('open');
@@ -1013,22 +1006,35 @@ function salvarNegociacao(){
   const tipo = document.querySelector('input[name="tipo"]:checked').value;
   const obs  = document.getElementById('modal-obs').value.trim();
   const neg  = { ...snapshot(), tipo, obs };
-  const hist = getHist();
-  hist.unshift(neg);
-  saveHist(hist);
-  fecharModal();
-  // feedback
-  const btn = document.getElementById('btn-copy').parentElement.querySelector('.btn-save');
-  if(btn){ const orig=btn.textContent; btn.textContent='Salvo!'; setTimeout(()=>btn.textContent=orig,1800); }
+
+  const btn = document.querySelector('.btn-save');
+  if(btn){ btn.textContent = 'Salvando...'; btn.disabled = true; }
+
+  fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify(neg)
+  })
+  .then(r => r.json())
+  .then(res => {
+    fecharModal();
+    if(btn){ btn.textContent = 'Salvo!'; setTimeout(()=>{ btn.textContent='Salvar negociação'; btn.disabled=false; }, 2000); }
+  })
+  .catch(() => {
+    fecharModal();
+    if(btn){ btn.textContent = 'Salvar negociação'; btn.disabled=false; }
+    alert('Erro ao salvar. Verifique a conexão.');
+  });
 }
 
 /* Renderiza lista */
 let filtroAtivo = 'todos';
+let histCache = [];
+
 function filtrarHist(el){
   document.querySelectorAll('.filtro-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
   filtroAtivo = el.dataset.filtro;
-  renderHist();
+  renderHist(histCache);
 }
 
 const BADGE = {
@@ -1038,79 +1044,76 @@ const BADGE = {
   finalizada: ['badge-finalizada','Finalizada'],
 };
 
-function renderHist(){
-  const hist = getHist();
+function renderHist(hist){
+  histCache = hist || histCache;
   const lista = document.getElementById('hist-lista');
   if(!lista) return;
-  const itens = filtroAtivo==='todos' ? hist : hist.filter(h=>h.tipo===filtroAtivo);
+
+  const itens = filtroAtivo==='todos' ? histCache : histCache.filter(h=>String(h.tipo)===filtroAtivo);
 
   if(!itens.length){
     lista.innerHTML = '<div class="hist-vazio">Nenhuma negociação encontrada.</div>';
     return;
   }
 
-  lista.innerHTML = itens.map(h => {
-    const [bc, bl] = BADGE[h.tipo]||['badge-simulacao','Simulação'];
+  // Ordena mais recente primeiro
+  const sorted = [...itens].sort((a,b) => Number(b.id) - Number(a.id));
+
+  lista.innerHTML = sorted.map(h => {
+    const tipo = String(h.tipo||'simulacao').toLowerCase();
+    const [bc, bl] = BADGE[tipo]||['badge-simulacao','Simulação'];
     const nome = [h.produtor, h.quality, h.bags ? h.bags+' sacas' : ''].filter(Boolean).join(' · ') || 'Negociação';
-    const diffs = `Bica: ${h.bicaDiff} · 14/16: ${h.d1416} · 17/18: ${h.d1718}`;
+    const diffs = `Bica: ${h.bicaDiff||'—'} · 14/16: ${h.d1416||'—'} · 17/18: ${h.d1718||'—'}`;
     const obs = h.obs ? `<div class="hist-obs">${h.obs}</div>` : '';
     return `
-    <div class="hist-card" data-id="${h.id}">
+    <div class="hist-card">
       <div><span class="hist-badge ${bc}">${bl}</span></div>
       <div class="hist-info">
         <strong>${nome}</strong>
         <div>R$ ${h.brl||'—'} · USD ${h.usd||'—'} · KC ${h.kc||'—'} · ${h.freight||'—'}</div>
         <div class="hist-res">${diffs}</div>
         ${obs}
-        <div class="hist-date">${h.data}</div>
+        <div class="hist-date">${h.data||''}</div>
       </div>
       <div class="hist-actions">
-        <select class="hist-btn hist-status-btn" onchange="alterarTipo(${h.id},this.value)">
-          <option value="simulacao"${h.tipo==='simulacao'?' selected':''}>Simulação</option>
-          <option value="oferta"${h.tipo==='oferta'?' selected':''}>Oferta</option>
-          <option value="demanda"${h.tipo==='demanda'?' selected':''}>Demanda</option>
-          <option value="finalizada"${h.tipo==='finalizada'?' selected':''}>Finalizada</option>
-        </select>
-        <button class="hist-btn" onclick="carregarNeg(${h.id})">Carregar</button>
-        <button class="hist-btn del" onclick="excluirNeg(${h.id})">Excluir</button>
+        <button class="hist-btn" onclick='carregarNeg(${JSON.stringify(h)})'>Carregar</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function alterarTipo(id, tipo){
-  const hist = getHist();
-  const neg = hist.find(h=>h.id===id);
-  if(neg){ neg.tipo=tipo; saveHist(hist); renderHist(); }
+function carregarHist(){
+  const lista = document.getElementById('hist-lista');
+  if(lista) lista.innerHTML = '<div class="hist-vazio">Carregando...</div>';
+
+  fetch(API_URL)
+    .then(r => r.json())
+    .then(res => {
+      if(res.ok) renderHist(res.data);
+      else lista.innerHTML = '<div class="hist-vazio">Erro ao carregar dados.</div>';
+    })
+    .catch(() => {
+      if(lista) lista.innerHTML = '<div class="hist-vazio">Sem conexão com o servidor.</div>';
+    });
 }
 
-function excluirNeg(id){
-  if(!confirm('Excluir esta negociação?')) return;
-  saveHist(getHist().filter(h=>h.id!==id));
-  renderHist();
-}
-
-function carregarNeg(id){
-  const neg = getHist().find(h=>h.id===id);
-  if(!neg) return;
-  const set = (elId, val) => { const e=document.getElementById(elId); if(e) e.value=val; };
-  set('i-producer', neg.produtor||''); set('i-broker-name', neg.corretor||'');
-  set('i-quality', neg.quality||''); set('i-crop', neg.safra||'');
-  set('v-bags', neg.bags||''); set('v-preco', neg.brl||'');
-  set('v-dolar', neg.usd||''); set('v-kc', neg.kc||'');
-  set('v-p1718', neg.p1718||''); set('v-premio', neg.premio||''); set('v-off', neg.off||'');
+function carregarNeg(h){
+  const set = (id, val) => { const e=document.getElementById(id); if(e) e.value=val||''; };
+  set('i-producer', h.produtor); set('i-broker-name', h.corretor);
+  set('i-quality',  h.quality);  set('i-crop', h.safra);
+  set('v-bags', h.bags); set('v-preco', h.brl); set('v-dolar', h.usd); set('v-kc', h.kc);
+  set('v-p1718', h.p1718); set('v-premio', h.premio); set('v-off', h.off);
   const sel = document.getElementById('v-cidade');
-  if(sel && neg.freight){ for(let o of sel.options){ if(o.value===neg.freight){ o.selected=true; break; } } }
+  if(sel && h.freight){ for(let o of sel.options){ if(o.value===h.freight){ o.selected=true; break; } } }
   switchTab(0);
   calc();
 }
 
 /* Exportar CSV */
 function exportarCSV(){
-  const hist = getHist();
-  if(!hist.length){ alert('Nenhuma negociação para exportar.'); return; }
+  if(!histCache.length){ alert('Nenhuma negociação para exportar.'); return; }
   const cab = ['Data','Tipo','Produtor','Corretor','Quality','Safra','Bags','BRL','USD','KC','17/18%','Prêmio','Offgrades%','Freight','Bica Diff','14/16 Diff','17/18 Diff','Obs'];
-  const linhas = hist.map(h=>[
+  const linhas = histCache.map(h=>[
     h.data, h.tipo, h.produtor, h.corretor, h.quality, h.safra,
     h.bags, h.brl, h.usd, h.kc, h.p1718, h.premio, h.off, h.freight,
     h.bicaDiff, h.d1416, h.d1718, h.obs||''
