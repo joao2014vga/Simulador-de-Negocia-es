@@ -103,6 +103,51 @@ select option{background:var(--surface);color:var(--text)}
 .btn-copy:hover{background:var(--pos)}
 .btn-copy.copied{background:#fff;color:var(--green);border-color:var(--green)}
 
+.btn-save{background:var(--green);border:1px solid var(--green);border-radius:7px;padding:.45rem 1rem;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:#fff;cursor:pointer;transition:background .2s;text-transform:uppercase}
+.btn-save:hover{background:var(--pos)}
+.btn-export{background:transparent;border:1px solid var(--green-dim);border-radius:7px;padding:.4rem .9rem;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--green);cursor:pointer;transition:background .2s;text-transform:uppercase}
+.btn-export:hover{background:var(--green-light)}
+
+/* Filtros */
+.filtro-btn{background:transparent;border:1px solid var(--border);border-radius:20px;padding:.3rem .9rem;font-family:var(--mono);font-size:11px;color:var(--muted);cursor:pointer;transition:all .2s}
+.filtro-btn:hover{border-color:var(--green-dim);color:var(--green)}
+.filtro-btn.active{background:var(--green-light);border-color:var(--green-dim);color:var(--green);font-weight:500}
+
+/* Cards do histórico */
+.hist-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:1rem 1.1rem;margin-bottom:8px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.hist-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;letter-spacing:.08em;font-weight:500;text-transform:uppercase;white-space:nowrap}
+.badge-simulacao{background:#e8f4fd;color:#1a6ea3}
+.badge-oferta{background:#fff3cd;color:#856404}
+.badge-demanda{background:#d1ecf1;color:#0c5460}
+.badge-finalizada{background:var(--green-light);color:var(--green)}
+.hist-info{font-size:12px;line-height:1.6;color:var(--text)}
+.hist-info strong{font-size:13px;color:var(--text)}
+.hist-info .hist-res{color:var(--green);font-weight:500;font-size:12px;margin-top:2px}
+.hist-info .hist-obs{color:var(--muted);font-size:11px;margin-top:3px;font-style:italic}
+.hist-info .hist-date{color:var(--muted2);font-size:10px;margin-top:4px;letter-spacing:.05em}
+.hist-actions{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.hist-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:.25rem .6rem;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.hist-btn:hover{border-color:var(--green-dim);color:var(--green)}
+.hist-btn.del:hover{border-color:var(--neg);color:var(--neg)}
+.hist-status-btn{font-size:10px;padding:.2rem .6rem}
+.hist-vazio{text-align:center;padding:3rem 1rem;color:var(--muted);font-size:13px}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:1.5rem;width:min(480px,92vw);box-shadow:0 8px 32px rgba(0,0,0,.12)}
+.modal-title{font-family:var(--serif);font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.75rem}
+.modal-resumo{background:var(--green-light);border:1px solid var(--green-dim);border-radius:8px;padding:.7rem .9rem;font-size:11px;color:var(--text);line-height:1.6;margin-bottom:.5rem}
+.modal-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.status-opt{cursor:pointer}
+.status-opt input{display:none}
+.status-opt span{display:block;text-align:center;padding:.4rem .3rem;border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--muted);transition:all .2s;font-family:var(--mono)}
+.status-opt input:checked+span{background:var(--green-light);border-color:var(--green-dim);color:var(--green);font-weight:500}
+.btn-cancel{background:transparent;border:1px solid var(--border);border-radius:7px;padding:.5rem 1.1rem;font-family:var(--mono);font-size:12px;color:var(--muted);cursor:pointer}
+.btn-confirmar{background:var(--green);border:1px solid var(--green);border-radius:7px;padding:.5rem 1.4rem;font-family:var(--mono);font-size:12px;color:#fff;cursor:pointer;font-weight:500}
+.btn-confirmar:hover{background:var(--pos)}
+
 details summary{cursor:pointer;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:10px;list-style:none;padding:.5rem 0;font-weight:500}
 details summary::-webkit-details-marker{display:none}
 details summary::after{content:'▾';margin-left:auto;font-size:14px;transition:transform .25s;color:var(--green-dim)}
@@ -145,6 +190,7 @@ details summary span.det-line{flex:1;height:1px;background:var(--green-light)}
   <button class="tab-btn active" onclick="switchTab(0)">Precificação Completa</button>
   <button class="tab-btn" onclick="switchTab(1)">Preço R$ → Diff</button>
   <button class="tab-btn" onclick="switchTab(2)">Diff → Preço R$</button>
+  <button class="tab-btn" onclick="switchTab(3)">Histórico</button>
 </div>
 
 <!-- ===== PAINEL 1: PRECIFICAÇÃO COMPLETA ===== -->
@@ -305,6 +351,7 @@ details summary span.det-line{flex:1;height:1px;background:var(--green-light)}
       <div class="resumo-text" id="resumo-text">Preencha os campos para gerar o resumo.</div>
       <div class="resumo-actions">
         <button class="btn-copy" id="btn-copy" onclick="copiarResumo()">Copiar texto</button>
+        <button class="btn-save" onclick="abrirModal()">Salvar negociação</button>
       </div>
     </div>
 
@@ -450,6 +497,65 @@ details summary span.det-line{flex:1;height:1px;background:var(--green-light)}
   <div class="main-result">
     <div class="mr-lbl"><small>Resultado</small>Preço da saca</div>
     <div><div class="mr-val c-gold" id="p-preco">—</div><span class="mr-unit">R$ / saca 60kg</span></div>
+  </div>
+</div>
+
+<!-- ===== PAINEL 4: HISTÓRICO ===== -->
+<div class="panel" id="panel-3">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+    <div class="sec" style="margin:0;flex:1">Histórico de Negociações</div>
+    <button class="btn-export" onclick="exportarCSV()">Exportar CSV</button>
+  </div>
+
+  <!-- Filtros -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem">
+    <button class="filtro-btn active" data-filtro="todos" onclick="filtrarHist(this)">Todos</button>
+    <button class="filtro-btn" data-filtro="oferta" onclick="filtrarHist(this)">Oferta</button>
+    <button class="filtro-btn" data-filtro="demanda" onclick="filtrarHist(this)">Demanda</button>
+    <button class="filtro-btn" data-filtro="finalizada" onclick="filtrarHist(this)">Finalizada</button>
+    <button class="filtro-btn" data-filtro="simulacao" onclick="filtrarHist(this)">Simulação</button>
+  </div>
+
+  <div id="hist-lista"></div>
+</div>
+
+<!-- MODAL SALVAR -->
+<div class="modal-overlay" id="modal-overlay" onclick="fecharModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">Salvar Negociação</div>
+    <div class="modal-resumo" id="modal-resumo-text"></div>
+
+    <div style="margin:1rem 0">
+      <div class="modal-label">Tipo / Status</div>
+      <div class="status-grid">
+        <label class="status-opt">
+          <input type="radio" name="tipo" value="simulacao" checked>
+          <span>Simulação</span>
+        </label>
+        <label class="status-opt">
+          <input type="radio" name="tipo" value="oferta">
+          <span>Oferta</span>
+        </label>
+        <label class="status-opt">
+          <input type="radio" name="tipo" value="demanda">
+          <span>Demanda</span>
+        </label>
+        <label class="status-opt">
+          <input type="radio" name="tipo" value="finalizada">
+          <span>Finalizada</span>
+        </label>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1rem">
+      <div class="modal-label">Observação (opcional)</div>
+      <textarea id="modal-obs" placeholder="Ex: cliente negociando, aguardar retorno..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .8rem;font-family:var(--mono);font-size:12px;color:var(--text);resize:vertical;min-height:60px;outline:none"></textarea>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-confirmar" onclick="salvarNegociacao()">Salvar</button>
+    </div>
   </div>
 </div>
 
@@ -859,6 +965,161 @@ function calcPreco(){
 function switchTab(i){
   document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
   document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',i===j));
+  if(i===3) renderHist();
+}
+
+/* ============================================================
+   HISTÓRICO — localStorage
+   ============================================================ */
+const HIST_KEY = 'brascof_historico';
+
+function getHist(){ try{ return JSON.parse(localStorage.getItem(HIST_KEY)||'[]'); }catch(e){ return []; } }
+function saveHist(h){ localStorage.setItem(HIST_KEY, JSON.stringify(h)); }
+
+/* Coleta snapshot atual dos campos + resultados */
+function snapshot(){
+  const get = id => { const e=document.getElementById(id); return e ? e.value||e.textContent : ''; };
+  return {
+    id: Date.now(),
+    data: new Date().toLocaleString('pt-BR'),
+    // identificação
+    produtor:  document.getElementById('i-producer').value.trim(),
+    corretor:  document.getElementById('i-broker-name').value.trim(),
+    quality:   document.getElementById('i-quality').value.trim(),
+    safra:     document.getElementById('i-crop').value.trim(),
+    // parâmetros
+    bags:      get('v-bags'), brl: get('v-preco'), usd: get('v-dolar'), kc: get('v-kc'),
+    p1718:     get('v-p1718'), premio: get('v-premio'), off: get('v-off'),
+    freight:   document.getElementById('v-cidade').value,
+    // resultados
+    bicaDiff:  document.getElementById('o-bicadiff').textContent,
+    d1416:     document.getElementById('o-d1416').textContent,
+    d1718:     document.getElementById('o-d1718').textContent,
+    resumo:    document.getElementById('resumo-text').textContent,
+  };
+}
+
+/* Modal */
+function abrirModal(){
+  const resumo = document.getElementById('resumo-text').textContent;
+  document.getElementById('modal-resumo-text').textContent = resumo;
+  document.getElementById('modal-obs').value = '';
+  document.querySelector('input[name="tipo"][value="simulacao"]').checked = true;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function fecharModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
+
+function salvarNegociacao(){
+  const tipo = document.querySelector('input[name="tipo"]:checked').value;
+  const obs  = document.getElementById('modal-obs').value.trim();
+  const neg  = { ...snapshot(), tipo, obs };
+  const hist = getHist();
+  hist.unshift(neg);
+  saveHist(hist);
+  fecharModal();
+  // feedback
+  const btn = document.getElementById('btn-copy').parentElement.querySelector('.btn-save');
+  if(btn){ const orig=btn.textContent; btn.textContent='Salvo!'; setTimeout(()=>btn.textContent=orig,1800); }
+}
+
+/* Renderiza lista */
+let filtroAtivo = 'todos';
+function filtrarHist(el){
+  document.querySelectorAll('.filtro-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  filtroAtivo = el.dataset.filtro;
+  renderHist();
+}
+
+const BADGE = {
+  simulacao:  ['badge-simulacao','Simulação'],
+  oferta:     ['badge-oferta','Oferta'],
+  demanda:    ['badge-demanda','Demanda'],
+  finalizada: ['badge-finalizada','Finalizada'],
+};
+
+function renderHist(){
+  const hist = getHist();
+  const lista = document.getElementById('hist-lista');
+  if(!lista) return;
+  const itens = filtroAtivo==='todos' ? hist : hist.filter(h=>h.tipo===filtroAtivo);
+
+  if(!itens.length){
+    lista.innerHTML = '<div class="hist-vazio">Nenhuma negociação encontrada.</div>';
+    return;
+  }
+
+  lista.innerHTML = itens.map(h => {
+    const [bc, bl] = BADGE[h.tipo]||['badge-simulacao','Simulação'];
+    const nome = [h.produtor, h.quality, h.bags ? h.bags+' sacas' : ''].filter(Boolean).join(' · ') || 'Negociação';
+    const diffs = `Bica: ${h.bicaDiff} · 14/16: ${h.d1416} · 17/18: ${h.d1718}`;
+    const obs = h.obs ? `<div class="hist-obs">${h.obs}</div>` : '';
+    return `
+    <div class="hist-card" data-id="${h.id}">
+      <div><span class="hist-badge ${bc}">${bl}</span></div>
+      <div class="hist-info">
+        <strong>${nome}</strong>
+        <div>R$ ${h.brl||'—'} · USD ${h.usd||'—'} · KC ${h.kc||'—'} · ${h.freight||'—'}</div>
+        <div class="hist-res">${diffs}</div>
+        ${obs}
+        <div class="hist-date">${h.data}</div>
+      </div>
+      <div class="hist-actions">
+        <select class="hist-btn hist-status-btn" onchange="alterarTipo(${h.id},this.value)">
+          <option value="simulacao"${h.tipo==='simulacao'?' selected':''}>Simulação</option>
+          <option value="oferta"${h.tipo==='oferta'?' selected':''}>Oferta</option>
+          <option value="demanda"${h.tipo==='demanda'?' selected':''}>Demanda</option>
+          <option value="finalizada"${h.tipo==='finalizada'?' selected':''}>Finalizada</option>
+        </select>
+        <button class="hist-btn" onclick="carregarNeg(${h.id})">Carregar</button>
+        <button class="hist-btn del" onclick="excluirNeg(${h.id})">Excluir</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function alterarTipo(id, tipo){
+  const hist = getHist();
+  const neg = hist.find(h=>h.id===id);
+  if(neg){ neg.tipo=tipo; saveHist(hist); renderHist(); }
+}
+
+function excluirNeg(id){
+  if(!confirm('Excluir esta negociação?')) return;
+  saveHist(getHist().filter(h=>h.id!==id));
+  renderHist();
+}
+
+function carregarNeg(id){
+  const neg = getHist().find(h=>h.id===id);
+  if(!neg) return;
+  const set = (elId, val) => { const e=document.getElementById(elId); if(e) e.value=val; };
+  set('i-producer', neg.produtor||''); set('i-broker-name', neg.corretor||'');
+  set('i-quality', neg.quality||''); set('i-crop', neg.safra||'');
+  set('v-bags', neg.bags||''); set('v-preco', neg.brl||'');
+  set('v-dolar', neg.usd||''); set('v-kc', neg.kc||'');
+  set('v-p1718', neg.p1718||''); set('v-premio', neg.premio||''); set('v-off', neg.off||'');
+  const sel = document.getElementById('v-cidade');
+  if(sel && neg.freight){ for(let o of sel.options){ if(o.value===neg.freight){ o.selected=true; break; } } }
+  switchTab(0);
+  calc();
+}
+
+/* Exportar CSV */
+function exportarCSV(){
+  const hist = getHist();
+  if(!hist.length){ alert('Nenhuma negociação para exportar.'); return; }
+  const cab = ['Data','Tipo','Produtor','Corretor','Quality','Safra','Bags','BRL','USD','KC','17/18%','Prêmio','Offgrades%','Freight','Bica Diff','14/16 Diff','17/18 Diff','Obs'];
+  const linhas = hist.map(h=>[
+    h.data, h.tipo, h.produtor, h.corretor, h.quality, h.safra,
+    h.bags, h.brl, h.usd, h.kc, h.p1718, h.premio, h.off, h.freight,
+    h.bicaDiff, h.d1416, h.d1718, h.obs||''
+  ].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(';'));
+  const csv = [cab.join(';'), ...linhas].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download = 'negociacoes_brascof_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
 }
 
 calc(); calcDiff(); calcPreco();
