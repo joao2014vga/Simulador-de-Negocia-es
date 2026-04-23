@@ -8,34 +8,33 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f0e0c;--surface:#181714;--surface2:#211f1b;
-  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
-  --gold:#c8a96e;--gold-dim:#8a7148;--gold-glow:rgba(200,169,110,0.15);
-  --text:#ede8df;--muted:#7a7368;--muted2:#534f47;
-  --neg:#c0614a;--pos:#6a9e6a;--info:#5b8db8;
+  --bg:#f4f6f3;--surface:#ffffff;--surface2:#eef1ec;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --green:#2d6a4f;--green-dim:#52b788;--green-light:#d8f3dc;--green-glow:rgba(82,183,136,0.18);
+  --text:#1b2e22;--muted:#6b7c6f;--muted2:#9eb09f;
+  --neg:#c0392b;--pos:#2d6a4f;--info:#1a6ea3;
   --mono:'DM Mono',monospace;--serif:'Fraunces',serif;
 }
 html{font-size:15px}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;padding:2.5rem 1.25rem 5rem;position:relative;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E")}
-body::after{content:'';position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,var(--gold) 40%,var(--gold) 60%,transparent 100%);opacity:.55}
-.page{max-width:900px;margin:0 auto;position:relative;z-index:1}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;padding:1.5rem 2rem 4rem;position:relative;overflow-x:hidden}
+body::after{content:'';position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,var(--green) 35%,var(--green-dim) 65%,transparent 100%)}
+.page{max-width:1400px;margin:0 auto;position:relative;z-index:1}
 
-header{text-align:center;margin-bottom:2.5rem;animation:fadeUp .6s ease both}
-.eyebrow{font-size:10px;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:.9rem;display:flex;align-items:center;justify-content:center;gap:12px}
-.eyebrow::before,.eyebrow::after{content:'';display:block;height:1px;width:36px;background:var(--gold-dim)}
-h1{font-family:var(--serif);font-weight:300;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.1;margin-bottom:.3rem}
-h1 em{font-style:italic;color:var(--gold)}
+header{text-align:center;margin-bottom:1.5rem;animation:fadeUp .6s ease both}
+.eyebrow{font-size:10px;letter-spacing:.25em;color:var(--green);text-transform:uppercase;margin-bottom:.6rem;display:flex;align-items:center;justify-content:center;gap:12px}
+.eyebrow::before,.eyebrow::after{content:'';display:block;height:1px;width:36px;background:var(--green-dim)}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.1;margin-bottom:.2rem;color:var(--text)}
+h1 em{font-style:italic;color:var(--green)}
 .subtitle{font-size:11px;color:var(--muted);letter-spacing:.06em}
 
-.tabs{display:flex;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:2rem;animation:fadeUp .6s .05s ease both}
+.tabs{display:flex;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:2rem;animation:fadeUp .6s .05s ease both;box-shadow:0 1px 4px rgba(0,0,0,.06)}
 .tab-btn{flex:1;background:transparent;border:none;border-radius:8px;padding:.6rem .5rem;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--muted);cursor:pointer;transition:background .2s,color .2s;text-transform:uppercase;line-height:1.4}
-.tab-btn:hover{color:var(--text)}
-.tab-btn.active{background:var(--surface2);color:var(--gold);border:1px solid var(--border2)}
+.tab-btn:hover{color:var(--green)}
+.tab-btn.active{background:var(--green-light);color:var(--green);border:1px solid var(--green-dim)}
 .panel{display:none}.panel.active{display:block;animation:fadeUp .35s ease both}
 
-.sec{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);margin:0 0 .75rem;display:flex;align-items:center;gap:10px}
-.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+.sec{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin:0 0 .75rem;display:flex;align-items:center;gap:10px;font-weight:500}
+.sec::after{content:'';flex:1;height:1px;background:var(--green-light)}
 
 .ig{display:grid;gap:10px;margin-bottom:1.25rem}
 .ig-2{grid-template-columns:repeat(2,1fr)}
@@ -43,29 +42,29 @@ h1 em{font-style:italic;color:var(--gold)}
 .ig-4{grid-template-columns:repeat(4,1fr)}
 @media(max-width:620px){.ig-3,.ig-4{grid-template-columns:repeat(2,1fr)}.ig-2{grid-template-columns:1fr}}
 
-.icard{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:.9rem .85rem;transition:border-color .2s,box-shadow .2s}
-.icard:focus-within{border-color:var(--gold-dim);box-shadow:0 0 0 3px var(--gold-glow)}
+.icard{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:.9rem .85rem;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.icard:focus-within{border-color:var(--green-dim);box-shadow:0 0 0 3px var(--green-glow)}
 .ilabel{font-size:10px;letter-spacing:.13em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;display:block}
 .irow{display:flex;align-items:baseline;gap:4px}
 .ipfx{font-size:10px;color:var(--muted);flex-shrink:0}
-.ibadge{font-size:11px;color:var(--gold);margin-top:5px;display:block;letter-spacing:.04em}
+.ibadge{font-size:11px;color:var(--green);margin-top:5px;display:block;letter-spacing:.04em}
 
 input[type=number]{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:16px;font-weight:500;width:100%;-moz-appearance:textfield}
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 input[type=text],input[type=date]{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:16px;font-weight:500;width:100%}
-input[type=date]{color-scheme:dark}
+input[type=date]{color-scheme:light}
 input::placeholder{color:var(--muted2)}
 select{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:14px;font-weight:500;width:100%;cursor:pointer}
-select option{background:var(--surface2);color:var(--text)}
+select option{background:var(--surface);color:var(--text)}
 
 .div{display:flex;align-items:center;gap:10px;margin:1rem 0}
 .div::before,.div::after{content:'';flex:1;height:1px;background:var(--border)}
-.div span{font-size:10px;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase}
+.div span{font-size:10px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
 
 .steps{display:flex;flex-direction:column;gap:2px;margin-bottom:1.25rem}
-.step{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.75rem 1rem;display:grid;grid-template-columns:1.6rem 1fr auto auto;align-items:center;gap:10px}
+.step{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.75rem 1rem;display:grid;grid-template-columns:1.6rem 1fr auto auto;align-items:center;gap:10px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 @media(max-width:550px){.step{grid-template-columns:1.6rem 1fr auto}.sfml{display:none}}
-.sn{font-size:10px;color:var(--gold-dim);letter-spacing:.1em}
+.sn{font-size:10px;color:var(--green-dim);letter-spacing:.1em;font-weight:500}
 .slbl{font-size:11px;color:var(--muted);letter-spacing:.03em}
 .sfml{font-size:10px;color:var(--muted2);text-align:right}
 .sval{font-size:13px;font-weight:500;color:var(--text);text-align:right;min-width:115px}
@@ -76,39 +75,59 @@ select option{background:var(--surface2);color:var(--text)}
 .rg-2{grid-template-columns:repeat(2,1fr)}
 @media(max-width:600px){.rg-3{grid-template-columns:repeat(2,1fr)}}
 
-.rcard{background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:1.1rem 1rem;position:relative;overflow:hidden}
-.rcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);opacity:.45}
+.rcard{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:1.1rem 1rem;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.rcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green-light),var(--green-dim),var(--green-light))}
 .rlbl{font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:.4rem}
-.rval{font-family:var(--serif);font-size:1.65rem;font-weight:600;letter-spacing:-.02em;line-height:1}
+.rval{font-family:var(--serif);font-size:1.65rem;font-weight:600;letter-spacing:-.02em;line-height:1;color:var(--text)}
 .runit{font-size:10px;color:var(--muted);margin-top:.25rem;letter-spacing:.08em}
 .rsub{font-size:11px;color:var(--muted2);margin-top:.3rem}
 
-.main-result{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:1.4rem 1.25rem;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;margin-bottom:1.25rem}
-.main-result::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);opacity:.5}
-.mr-lbl{font-family:var(--serif);font-weight:300;font-size:1rem;color:var(--text)}
-.mr-lbl small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:2px;font-weight:400}
-.mr-val{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.4rem);font-weight:600;letter-spacing:-.02em;text-align:right;transition:color .3s}
-.mr-unit{font-size:11px;color:var(--muted);display:block;text-align:right;margin-top:2px;letter-spacing:.08em;font-family:var(--mono)}
+.main-result{background:var(--green);border:1px solid var(--green);border-radius:12px;padding:1.4rem 1.25rem;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(45,106,79,.2)}
+.mr-lbl{font-family:var(--serif);font-weight:300;font-size:1rem;color:rgba(255,255,255,.85)}
+.mr-lbl small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.15em;color:rgba(255,255,255,.6);text-transform:uppercase;margin-bottom:2px;font-weight:400}
+.mr-val{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.4rem);font-weight:600;letter-spacing:-.02em;text-align:right;transition:color .3s;color:#ffffff}
+.mr-unit{font-size:11px;color:rgba(255,255,255,.6);display:block;text-align:right;margin-top:2px;letter-spacing:.08em;font-family:var(--mono)}
 
-.c-neg{color:var(--neg)}.c-pos{color:var(--pos)}.c-gold{color:var(--gold)}.c-info{color:var(--info)}
+.c-neg{color:var(--neg)}.c-pos{color:var(--pos)}.c-gold{color:var(--green)}.c-info{color:var(--info)}
 
 .stbl{width:100%;border-collapse:collapse;margin-bottom:1.25rem}
-.stbl td{padding:.5rem .85rem;border-bottom:1px solid var(--border);font-size:12px}
+.stbl td{padding:.5rem .85rem;border-bottom:1px solid var(--border);font-size:12px;color:var(--text)}
 .stbl td:last-child{text-align:right;font-weight:500}
 .stbl tr:last-child td{border-bottom:none}
-.stbl .rtotal td{border-top:1px solid var(--border2);font-weight:500;color:var(--gold);padding-top:.75rem}
+.stbl .rtotal td{border-top:1px solid var(--green-light);font-weight:500;color:var(--green);padding-top:.75rem}
 
-.resumo-box{background:var(--surface);border:1px solid var(--border2);border-radius:11px;padding:1.1rem 1.25rem;margin-bottom:1.25rem;position:relative}
-.resumo-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);opacity:.45;border-radius:11px 11px 0 0}
+.resumo-box{background:var(--green-light);border:1px solid var(--green-dim);border-radius:11px;padding:1.1rem 1.25rem;margin-bottom:1.25rem}
 .resumo-text{font-size:12px;color:var(--text);line-height:1.7;letter-spacing:.02em;word-break:break-word}
 .resumo-actions{display:flex;gap:8px;margin-top:.85rem}
-.btn-copy{background:transparent;border:1px solid var(--border2);border-radius:7px;padding:.45rem 1rem;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);cursor:pointer;transition:background .2s,color .2s;text-transform:uppercase}
-.btn-copy:hover{background:var(--surface2);color:var(--gold)}
-.btn-copy.copied{color:var(--pos);border-color:var(--pos)}
+.btn-copy{background:var(--green);border:1px solid var(--green);border-radius:7px;padding:.45rem 1rem;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:#fff;cursor:pointer;transition:background .2s,color .2s;text-transform:uppercase}
+.btn-copy:hover{background:var(--pos)}
+.btn-copy.copied{background:#fff;color:var(--green);border-color:var(--green)}
 
-.footer{margin-top:2rem;text-align:center;font-size:11px;color:var(--muted2);letter-spacing:.06em}
-.footer span{color:var(--gold-dim)}
+details summary{cursor:pointer;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:10px;list-style:none;padding:.5rem 0;font-weight:500}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:'▾';margin-left:auto;font-size:14px;transition:transform .25s;color:var(--green-dim)}
+details[open] summary::after{transform:rotate(-180deg)}
+details summary span.det-line{flex:1;height:1px;background:var(--green-light)}
+
+.footer{margin-top:2rem;text-align:center;font-size:11px;color:var(--muted);letter-spacing:.06em}
+.footer span{color:var(--green)}
 .ts{font-size:10px;color:var(--muted2);text-align:center;margin-top:.3rem;letter-spacing:.1em}
+
+.ig-1{grid-template-columns:1fr}
+
+/* Layout duas colunas */
+.two-col{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+.col-left{min-width:0}
+.col-left .ig{margin-bottom:.85rem}
+.col-right{min-width:0;position:sticky;top:1rem}
+
+/* Cards dos diffs em coluna */
+.rg-1{display:flex;flex-direction:column;gap:8px;margin-bottom:.75rem}
+.rcard-diff{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem}
+.rcard-diff .rlbl{margin-bottom:0;flex:1}
+.rcard-diff .rval{font-size:1.4rem;margin-left:auto;text-align:right}
+.rcard-diff .runit{margin-top:0;margin-left:.5rem;white-space:nowrap}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 </style>
@@ -118,8 +137,8 @@ select option{background:var(--surface2);color:var(--text)}
 
 <header>
   <div class="eyebrow">ICE Futures U.S. · Contrato C</div>
-  <h1>Brascof · Simulador de <em>Negociação</em></h1>
-  <p class="subtitle">Bica corrida — precificação completa para exportação</p>
+  <h1>Simulador de <em>Negócios</em></h1>
+  <p class="subtitle">Precificação completa</p>
 </header>
 
 <div class="tabs">
@@ -130,259 +149,252 @@ select option{background:var(--surface2);color:var(--text)}
 
 <!-- ===== PAINEL 1: PRECIFICAÇÃO COMPLETA ===== -->
 <div class="panel active" id="panel-0">
+<div class="two-col">
 
-  <!-- IDENTIFICAÇÃO -->
-  <div class="sec">Identificação</div>
-  <div class="ig ig-3">
-    <div class="icard">
-      <label class="ilabel" for="i-producer">Produtor</label>
-      <input type="text" id="i-producer" placeholder="Ex: SCHMITT" oninput="calc()">
-    </div>
-    <div class="icard">
-      <label class="ilabel" for="i-broker-name">Corretor</label>
-      <input type="text" id="i-broker-name" placeholder="Ex: VB" oninput="calc()">
-    </div>
-    <div class="icard">
-      <label class="ilabel" for="i-quality">Qualidade</label>
-      <input type="text" id="i-quality" placeholder="Ex: BC2" oninput="calc()">
-    </div>
-  </div>
-  <div class="ig ig-3">
-    <div class="icard">
-      <label class="ilabel" for="i-crop">Safra</label>
-      <input type="text" id="i-crop" placeholder="Ex: 26/27" oninput="calc()">
-    </div>
-    <div class="icard">
-      <label class="ilabel" for="i-date">Data Retirada</label>
-      <input type="date" id="i-date" oninput="calc()">
-    </div>
-    <div class="icard">
-      <label class="ilabel" for="i-paydate">Data Pagamento</label>
-      <input type="date" id="i-paydate" oninput="calc()">
-    </div>
-  </div>
+  <!-- ========== COLUNA ESQUERDA — INPUTS ========== -->
+  <div class="col-left">
 
-  <!-- DATA — mesma ordem da planilha -->
-  <div class="sec">Data</div>
-  <div class="ig ig-4">
-    <div class="icard">
-      <label class="ilabel" for="v-bags">Bags</label>
-      <div class="irow"><input type="number" id="v-bags" value="500" step="1" min="1" oninput="calc()"></div>
+    <div class="sec">Identificação</div>
+    <div class="ig ig-3">
+      <div class="icard">
+        <label class="ilabel" for="i-producer">Produtor</label>
+        <input type="text" id="i-producer" placeholder="Ex: SCHMITT" oninput="calc()">
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="i-broker-name">Corretor</label>
+        <input type="text" id="i-broker-name" placeholder="Ex: VB" oninput="calc()">
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="i-quality">Qualidade</label>
+        <input type="text" id="i-quality" placeholder="Ex: BC2" oninput="calc()">
+      </div>
     </div>
-    <div class="icard">
-      <label class="ilabel" for="v-preco">BRL Price Bica / 60kg</label>
-      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-preco" value="1930" step="1" min="0" oninput="calc()"></div>
+    <div class="ig ig-3">
+      <div class="icard">
+        <label class="ilabel" for="i-crop">Safra</label>
+        <input type="text" id="i-crop" placeholder="Ex: 26/27" oninput="calc()">
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="i-date">Data Retirada</label>
+        <input type="date" id="i-date" oninput="calc()">
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="i-paydate">Data Pagamento</label>
+        <input type="date" id="i-paydate" oninput="calc()">
+      </div>
     </div>
-    <div class="icard">
-      <label class="ilabel" for="v-dolar">USD BRL</label>
-      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-dolar" value="4.992" step="0.0001" min="0.0001" oninput="calc()"></div>
-    </div>
-    <div class="icard">
-      <label class="ilabel" for="v-kc">KC (Tela NY)</label>
-      <div class="irow"><input type="number" id="v-kc" value="303.8" step="0.05" min="0" oninput="calc()"><span class="ipfx">cts/lb</span></div>
-    </div>
-  </div>
-  <div class="ig ig-4">
-    <div class="icard">
-      <label class="ilabel" for="v-p1718">17/18%</label>
-      <div class="irow"><input type="number" id="v-p1718" value="20" step="1" min="0" max="100" oninput="calc()"><span class="ipfx">%</span></div>
-    </div>
-    <div class="icard">
-      <label class="ilabel" for="v-premio">Prêmio</label>
-      <div class="irow"><input type="number" id="v-premio" value="12" step="0.5" oninput="calc()"><span class="ipfx">cts/lb</span></div>
-    </div>
-    <div class="icard">
-      <label class="ilabel" for="v-off">Offgrades %</label>
-      <div class="irow"><input type="number" id="v-off" value="20" step="0.5" min="0" max="100" oninput="calc()"><span class="ipfx">%</span></div>
-    </div>
-    <div class="icard">
-      <label class="ilabel" for="v-fm">Foreign Matter %</label>
-      <div class="irow"><input type="number" id="v-fm" value="0.5" step="0.1" min="0" oninput="calc()"><span class="ipfx">%</span></div>
-    </div>
-  </div>
-  <div class="ig ig-4">
-    <div class="icard">
-      <label class="ilabel" for="v-producer">Producer? (Y/N)</label>
-      <select id="v-producer" onchange="calc()">
-        <option value="N">N</option>
-        <option value="Y">Y</option>
-      </select>
-    </div>
-    <div class="icard" style="grid-column:span 2">
-      <label class="ilabel" for="v-cidade">Freight — Cidade</label>
-      <select id="v-cidade" onchange="calc()"></select>
-      <span class="ibadge" id="v-frete-badge">R$ —</span>
-    </div>
-    <div class="icard">
-      <label class="ilabel" for="v-broker">Broker (Y/N)</label>
-      <select id="v-broker" onchange="calc()">
-        <option value="Y">Y</option>
-        <option value="N">N</option>
-      </select>
-    </div>
-  </div>
-  <div class="ig ig-2">
-    <div class="icard">
-      <label class="ilabel" for="v-extra">Extra Costs (+) / Savings (−) R$</label>
-      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-extra" value="0" step="1" oninput="calc()"></div>
-    </div>
-    <div class="icard">
-      <label class="ilabel" for="v-ciclo">Ciclo de Estoque (dias)</label>
-      <div class="irow"><input type="number" id="v-ciclo" value="30" step="1" min="1" oninput="calc()"><span class="ipfx">dias</span></div>
-    </div>
-  </div>
 
-  <!-- LOW GRADE INPUTS -->
-  <div class="sec">Low Grade</div>
-  <div class="ig ig-4">
-    <div class="icard">
-      <label class="ilabel" for="v-lg-direto">Low Grade BRL/bag <span style="color:var(--gold-dim)">(direto)</span></label>
-      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-lg-direto" value="" step="1" min="0" placeholder="ou use catação →" oninput="calc()"></div>
-      <span class="ibadge" id="o-lg-auto" style="color:var(--muted)"></span>
+    <div class="sec">Descrição do Café</div>
+    <div class="ig ig-4">
+      <div class="icard">
+        <label class="ilabel" for="v-bags">Bags</label>
+        <div class="irow"><input type="number" id="v-bags" value="" step="1" min="1" placeholder="Ex: 500" oninput="calc()"></div>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-preco">BRL Price Bica / 60kg</label>
+        <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-preco" value="" step="1" min="0" placeholder="Ex: 1930" oninput="calc()"></div>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-dolar">USD BRL</label>
+        <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-dolar" value="" step="0.0001" min="0.0001" placeholder="Ex: 4.992" oninput="calc()"></div>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-kc">KC (Tela NY)</label>
+        <div class="irow"><input type="number" id="v-kc" value="" step="0.05" min="0" placeholder="Ex: 303.8" oninput="calc()"><span class="ipfx">cts/lb</span></div>
+      </div>
     </div>
-    <div class="icard">
-      <label class="ilabel" for="v-grinders-diff">Grinders Diff <span style="color:var(--muted2)">(catação)</span></label>
-      <div class="irow"><input type="number" id="v-grinders-diff" value="" step="1" placeholder="-58" oninput="calc()"><span class="ipfx">cts/lb</span></div>
+    <div class="ig ig-4">
+      <div class="icard">
+        <label class="ilabel" for="v-p1718">17/18%</label>
+        <div class="irow"><input type="number" id="v-p1718" value="" step="1" min="0" max="100" placeholder="Ex: 20" oninput="calc()"><span class="ipfx">%</span></div>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-premio">Prêmio</label>
+        <div class="irow"><input type="number" id="v-premio" value="" step="0.5" placeholder="Ex: 12" oninput="calc()"><span class="ipfx">cts/lb</span></div>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-off">Offgrades %</label>
+        <div class="irow"><input type="number" id="v-off" value="" step="0.5" min="0" max="100" placeholder="Ex: 20" oninput="calc()"><span class="ipfx">%</span></div>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-fm">Foreign Matter %</label>
+        <div class="irow"><input type="number" id="v-fm" value="" step="0.1" min="0" placeholder="Ex: 0.5" oninput="calc()"><span class="ipfx">%</span></div>
+      </div>
     </div>
-    <div class="icard">
-      <label class="ilabel" for="v-fundo-rs">Fundo <span style="color:var(--muted2)">(catação)</span></label>
-      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-fundo-rs" value="" step="5" min="0" placeholder="530" oninput="calc()"></div>
+    <div class="ig ig-4">
+      <div class="icard">
+        <label class="ilabel" for="v-producer">Producer?</label>
+        <select id="v-producer" onchange="calc()">
+          <option value="N">N</option>
+          <option value="Y">Y</option>
+        </select>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-broker">Broker?</label>
+        <select id="v-broker" onchange="calc()">
+          <option value="Y">Y</option>
+          <option value="N">N</option>
+        </select>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-extra">Extra Costs (+) / Savings (−)</label>
+        <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-extra" value="" step="1" placeholder="Ex: 0" oninput="calc()"></div>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-ciclo">Ciclo de Estoque</label>
+        <div class="irow"><input type="number" id="v-ciclo" value="30" step="1" min="1" oninput="calc()"><span class="ipfx">dias</span></div>
+      </div>
     </div>
-    <div class="icard">
-      <label class="ilabel" for="v-def1500-rs">1500 Def <span style="color:var(--muted2)">(catação)</span></label>
-      <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-def1500-rs" value="" step="5" min="0" placeholder="530" oninput="calc()"></div>
+    <div class="ig ig-1">
+      <div class="icard">
+        <label class="ilabel" for="v-cidade">Freight — Cidade de Origem</label>
+        <select id="v-cidade" onchange="calc()"></select>
+        <span class="ibadge" id="v-frete-badge">R$ —</span>
+      </div>
     </div>
-  </div>
 
-  <div class="div"><span>Resultados</span></div>
-
-  <!-- DIFFS -->
-  <div class="sec">Diferenciais</div>
-  <div class="rg rg-3">
-    <div class="rcard">
-      <div class="rlbl">Bica Diff</div>
-      <div class="rval" id="o-bicadiff">—</div>
-      <div class="runit">cts / libra</div>
+    <div class="sec">LG / Grinders</div>
+    <div class="ig ig-4">
+      <div class="icard">
+        <label class="ilabel" for="v-lg-direto">Low Grade BRL/bag <span style="color:var(--green-dim)">(direto)</span></label>
+        <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-lg-direto" value="" step="1" min="0" placeholder="ou use catação →" oninput="calc()"></div>
+        <span class="ibadge" id="o-lg-auto" style="color:var(--muted)"></span>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-grinders-diff">Grinders Diff <span style="color:var(--muted2)">(catação)</span></label>
+        <div class="irow"><input type="number" id="v-grinders-diff" value="" step="1" placeholder="Ex: -58" oninput="calc()"><span class="ipfx">cts/lb</span></div>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-fundo-rs">Fundo <span style="color:var(--muted2)">(catação)</span></label>
+        <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-fundo-rs" value="" step="5" min="0" placeholder="Ex: 530" oninput="calc()"></div>
+      </div>
+      <div class="icard">
+        <label class="ilabel" for="v-def1500-rs">1500 Def <span style="color:var(--muted2)">(catação)</span></label>
+        <div class="irow"><span class="ipfx">R$</span><input type="number" id="v-def1500-rs" value="" step="5" min="0" placeholder="Ex: 530" oninput="calc()"></div>
+      </div>
     </div>
-    <div class="rcard">
-      <div class="rlbl">14/16 Diff</div>
-      <div class="rval" id="o-d1416">—</div>
-      <div class="runit">cts / libra</div>
-      <div class="rsub" id="o-d1416net"></div>
-    </div>
-    <div class="rcard">
-      <div class="rlbl">17/18 Diff</div>
-      <div class="rval" id="o-d1718">—</div>
-      <div class="runit">cts / libra</div>
-      <div class="rsub" id="o-d1718net"></div>
-    </div>
-  </div>
 
-  <!-- PREÇOS -->
-  <details style="margin-bottom:1.25rem">
-    <summary style="cursor:pointer;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);display:flex;align-items:center;gap:10px;list-style:none;padding:.5rem 0">
-      <span>Preços de Referência</span>
-      <span style="margin-left:auto;font-size:14px">▾</span>
-      <span style="flex:1;height:1px;background:var(--border);margin-left:0"></span>
-    </summary>
-  <div class="rg rg-3" style="margin-top:.75rem">
-    <div class="rcard">
-      <div class="rlbl">Exportável FOB Cost (USD/saca)</div>
-      <div class="rval c-gold" id="o-expfob">—</div>
-      <div class="runit">USD / saca 60kg</div>
+  </div><!-- /col-left -->
+
+  <!-- ========== COLUNA DIREITA — RESULTADOS ========== -->
+  <div class="col-right">
+
+    <div class="sec">Diferenciais</div>
+    <div class="rg rg-1">
+      <div class="rcard rcard-diff">
+        <div class="rlbl">Bica Diff</div>
+        <div class="rval" id="o-bicadiff">—</div>
+        <div class="runit">cts / libra</div>
+      </div>
+      <div class="rcard rcard-diff">
+        <div class="rlbl">14/16 Diff</div>
+        <div class="rval" id="o-d1416">—</div>
+        <div class="runit">cts / libra</div>
+        <div class="rsub" id="o-d1416net"></div>
+      </div>
+      <div class="rcard rcard-diff">
+        <div class="rlbl">17/18 Diff</div>
+        <div class="rval" id="o-d1718">—</div>
+        <div class="runit">cts / libra</div>
+        <div class="rsub" id="o-d1718net"></div>
+      </div>
     </div>
-    <div class="rcard">
-      <div class="rlbl">Exportável FOB (cts/lb)</div>
-      <div class="rval" id="o-expcts">—</div>
-      <div class="runit">cts / libra</div>
+
+    <div class="sec" style="margin-top:.5rem">Resumo</div>
+    <div class="resumo-box" style="margin-bottom:.75rem">
+      <div class="resumo-text" id="resumo-text">Preencha os campos para gerar o resumo.</div>
+      <div class="resumo-actions">
+        <button class="btn-copy" id="btn-copy" onclick="copiarResumo()">Copiar texto</button>
+      </div>
     </div>
-    <div class="rcard">
-      <div class="rlbl">Bica FOT (cts/lb)</div>
-      <div class="rval" id="o-bicafot">—</div>
-      <div class="runit">cts / libra</div>
-    </div>
-  </div>
-  <div class="rg rg-3">
-    <div class="rcard">
-      <div class="rlbl">Low Grade FOB Equiv. (USD/saca)</div>
-      <div class="rval c-info" id="o-lgfob">—</div>
-      <div class="runit">USD / saca</div>
-    </div>
-    <div class="rcard">
-      <div class="rlbl">14/16 % (calculado)</div>
-      <div class="rval" id="o-p1416">—</div>
-      <div class="runit">% da bica</div>
-    </div>
-    <div class="rcard">
-      <div class="rlbl">NY Lots</div>
-      <div class="rval c-info" id="o-nylots">—</div>
-      <div class="runit">lotes hedge</div>
-    </div>
-  </div>
-  </details>
 
-  <!-- CUSTOS DETALHADOS -->
-  <details style="margin-bottom:1.25rem">
-    <summary style="cursor:pointer;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);display:flex;align-items:center;gap:10px;list-style:none;padding:.5rem 0">
-      <span>Detalhamento Completo — Referência Pricing</span>
-      <span style="margin-left:auto;font-size:14px;transition:transform .2s" class="det-arrow">▾</span>
-      <span style="flex:1;height:1px;background:var(--border);margin-left:0"></span>
-    </summary>
-  <table class="stbl">
-    <tr><td colspan="2" style="color:var(--gold-dim);font-size:10px;letter-spacing:.1em;padding-top:.75rem;padding-bottom:.25rem">COMPRA (Pricing D17–D22)</td></tr>
-    <tr><td style="color:var(--muted)">BRL Price Bica / 60kg</td><td id="t-brl">—</td></tr>
-    <tr><td style="color:var(--muted)">USD BRL (câmbio)</td><td id="t-usd">—</td></tr>
-    <tr><td style="color:var(--muted)">D17 · USD Bica Price / bag</td><td id="t-usdBica">—</td></tr>
-    <tr><td style="color:var(--muted)">D18 · ICMS Tax Credit</td><td id="t-icms">—</td></tr>
-    <tr><td style="color:var(--muted)">D19 · Frete Origem <span id="t-cidade" style="color:var(--muted2)"></span></td><td id="t-frete">—</td></tr>
-    <tr><td style="color:var(--muted)">D20 · Corretagem (broker 0,5%)</td><td id="t-broker">—</td></tr>
-    <tr><td style="color:var(--muted)">D21 · Dry Mill</td><td id="t-drymill">USD 3,0000</td></tr>
-    <tr><td style="font-weight:500">D22 · Total Purchase Cost</td><td id="t-totalc" style="font-weight:500">—</td></tr>
+    <!-- PREÇOS DE REFERÊNCIA (colapsável) -->
+    <details style="margin-bottom:.75rem">
+      <summary>
+        <span>Preços de Referência</span>
+        <span class="det-line"></span>
+      </summary>
+      <div style="margin-top:.75rem;display:flex;flex-direction:column;gap:8px">
+        <div class="rcard">
+          <div class="rlbl">Exportável FOB Cost (USD/saca)</div>
+          <div class="rval c-gold" id="o-expfob">—</div>
+          <div class="runit">USD / saca 60kg</div>
+        </div>
+        <div class="rcard">
+          <div class="rlbl">Exportável FOB (cts/lb)</div>
+          <div class="rval" id="o-expcts">—</div>
+          <div class="runit">cts / libra</div>
+        </div>
+        <div class="rcard">
+          <div class="rlbl">Bica FOT (cts/lb)</div>
+          <div class="rval" id="o-bicafot">—</div>
+          <div class="runit">cts / libra</div>
+        </div>
+        <div class="rcard">
+          <div class="rlbl">Low Grade FOB Equiv. (USD/saca)</div>
+          <div class="rval c-info" id="o-lgfob">—</div>
+          <div class="runit">USD / saca</div>
+        </div>
+        <div class="rcard">
+          <div class="rlbl">14/16 % (calculado)</div>
+          <div class="rval" id="o-p1416">—</div>
+          <div class="runit">% da bica</div>
+        </div>
+        <div class="rcard">
+          <div class="rlbl">NY Lots</div>
+          <div class="rval c-info" id="o-nylots">—</div>
+          <div class="runit">lotes hedge</div>
+        </div>
+      </div>
+    </details>
 
-    <tr><td colspan="2" style="color:var(--gold-dim);font-size:10px;letter-spacing:.1em;padding-top:.75rem;padding-bottom:.25rem">LOW GRADE (Pricing D24–D27)</td></tr>
-    <tr><td style="color:var(--muted)">LG BRL / bag</td><td id="t-lgbrl">—</td></tr>
-    <tr><td style="color:var(--muted)">D24 · LG USD / bag (FOT)</td><td id="t-lgusd">—</td></tr>
-    <tr><td style="color:var(--muted)">D25 · LG Sale Brokerage (0,5%)</td><td id="t-lgbrok">—</td></tr>
-    <tr><td style="color:var(--muted)">D26 · LG FOT EWH Value</td><td id="t-lgfot">—</td></tr>
-    <tr><td style="color:var(--muted)">D6  · FOB Cost / bag (porto)</td><td id="t-fobcost">—</td></tr>
-    <tr><td style="font-weight:500">D27 · LG FOB Equiv</td><td id="t-lgfob2" style="font-weight:500">—</td></tr>
+    <!-- DETALHAMENTO (colapsável) -->
+    <details style="margin-bottom:.75rem">
+      <summary>
+        <span>Detalhamento Completo — Referência Pricing</span>
+        <span class="det-line"></span>
+      </summary>
+      <table class="stbl" style="margin-top:.75rem">
+        <tr><td colspan="2" style="color:var(--green);font-size:10px;letter-spacing:.1em;padding-top:.5rem;padding-bottom:.2rem;font-weight:500">COMPRA (D17–D22)</td></tr>
+        <tr><td style="color:var(--muted)">BRL Price Bica</td><td id="t-brl">—</td></tr>
+        <tr><td style="color:var(--muted)">USD BRL</td><td id="t-usd">—</td></tr>
+        <tr><td style="color:var(--muted)">D17 · USD Bica/bag</td><td id="t-usdBica">—</td></tr>
+        <tr><td style="color:var(--muted)">D18 · ICMS</td><td id="t-icms">—</td></tr>
+        <tr><td style="color:var(--muted)">D19 · Frete <span id="t-cidade" style="color:var(--muted2)"></span></td><td id="t-frete">—</td></tr>
+        <tr><td style="color:var(--muted)">D20 · Corretagem</td><td id="t-broker">—</td></tr>
+        <tr><td style="color:var(--muted)">D21 · Dry Mill</td><td id="t-drymill">USD 3,0000</td></tr>
+        <tr><td style="font-weight:500">D22 · Total Purchase Cost</td><td id="t-totalc" style="font-weight:500">—</td></tr>
+        <tr><td colspan="2" style="color:var(--green);font-size:10px;letter-spacing:.1em;padding-top:.5rem;padding-bottom:.2rem;font-weight:500">LOW GRADE (D24–D27)</td></tr>
+        <tr><td style="color:var(--muted)">LG BRL/bag</td><td id="t-lgbrl">—</td></tr>
+        <tr><td style="color:var(--muted)">D24 · LG USD FOT</td><td id="t-lgusd">—</td></tr>
+        <tr><td style="color:var(--muted)">D25 · LG Brokerage</td><td id="t-lgbrok">—</td></tr>
+        <tr><td style="color:var(--muted)">D26 · LG FOT Value</td><td id="t-lgfot">—</td></tr>
+        <tr><td style="color:var(--muted)">D6  · FOB Cost</td><td id="t-fobcost">—</td></tr>
+        <tr><td style="font-weight:500">D27 · LG FOB Equiv</td><td id="t-lgfob2" style="font-weight:500">—</td></tr>
+        <tr><td colspan="2" style="color:var(--green);font-size:10px;letter-spacing:.1em;padding-top:.5rem;padding-bottom:.2rem;font-weight:500">EXPORTÁVEL (D32–D37)</td></tr>
+        <tr><td style="color:var(--muted)">Offgrades efetivo</td><td id="t-offeff">—</td></tr>
+        <tr><td style="color:var(--muted)">D29 · Mill Loss Bags</td><td id="t-millbags">—</td></tr>
+        <tr><td style="color:var(--muted)">D30 · Mill Loss R$</td><td id="t-millbrl">—</td></tr>
+        <tr><td style="color:var(--muted)">D32 · Cost pós LG</td><td id="t-postlg">—</td></tr>
+        <tr><td style="color:var(--muted)">D33 · Storage</td><td id="t-storage">—</td></tr>
+        <tr><td style="color:var(--muted)">D34 · Interest</td><td id="t-juros">—</td></tr>
+        <tr><td style="color:var(--muted)">D35 · FOB</td><td id="t-fob2">—</td></tr>
+        <tr><td style="color:var(--muted)">D36 · Tax Credit</td><td id="t-tax">—</td></tr>
+        <tr><td style="color:var(--muted)">Extra Costs</td><td id="t-extra">—</td></tr>
+        <tr class="rtotal"><td>D37 · Exportable FOB Cost</td><td id="t-expfobcost">—</td></tr>
+        <tr><td colspan="2" style="color:var(--green);font-size:10px;letter-spacing:.1em;padding-top:.5rem;padding-bottom:.2rem;font-weight:500">DIFFS (D40–F44)</td></tr>
+        <tr><td style="color:var(--muted)">D40 · 17/18 USD</td><td id="t-d40">—</td></tr>
+        <tr><td style="color:var(--muted)">D41 · 14/16 USD</td><td id="t-d41">—</td></tr>
+        <tr><td style="color:var(--muted)">D43 · Exp FOB cts/lb</td><td id="t-d43">—</td></tr>
+        <tr><td style="color:var(--muted)">D44 · Bica FOT cts/lb</td><td id="t-d44">—</td></tr>
+        <tr><td style="color:var(--muted)">F40 · 17/18 Diff</td><td id="t-f40">—</td></tr>
+        <tr><td style="color:var(--muted)">F41 · 14/16 Diff</td><td id="t-f41">—</td></tr>
+        <tr><td style="color:var(--muted)">F44 · Bica Diff</td><td id="t-f44">—</td></tr>
+      </table>
+    </details>
 
-    <tr><td colspan="2" style="color:var(--gold-dim);font-size:10px;letter-spacing:.1em;padding-top:.75rem;padding-bottom:.25rem">MILLING LOSS (Pricing D29–D30)</td></tr>
-    <tr><td style="color:var(--muted)">Milling Loss % (fixo)</td><td>0,25%</td></tr>
-    <tr><td style="color:var(--muted)">D29 · Milling Loss Bags</td><td id="t-millbags">—</td></tr>
-    <tr><td style="color:var(--muted)">D30 · Milling Loss R$</td><td id="t-millbrl">—</td></tr>
-
-    <tr><td colspan="2" style="color:var(--gold-dim);font-size:10px;letter-spacing:.1em;padding-top:.75rem;padding-bottom:.25rem">EXPORTÁVEL (Pricing D32–D37)</td></tr>
-    <tr><td style="color:var(--muted)">Offgrades % efetivo (off − 0,25%)</td><td id="t-offeff">—</td></tr>
-    <tr><td style="color:var(--muted)">D32 · Cost após LG + Milling Loss</td><td id="t-postlg">—</td></tr>
-    <tr><td style="color:var(--muted)">D33 · Storage + Insurance</td><td id="t-storage">—</td></tr>
-    <tr><td style="color:var(--muted)">D34 · Interest (juros)</td><td id="t-juros">—</td></tr>
-    <tr><td style="color:var(--muted)">D35 · FOB Cost</td><td id="t-fob2">—</td></tr>
-    <tr><td style="color:var(--muted)">D36 · Tax Credit PIS/Cofins</td><td id="t-tax">—</td></tr>
-    <tr><td style="color:var(--muted)">Extra Costs / Savings</td><td id="t-extra">—</td></tr>
-    <tr class="rtotal"><td>D37 · Exportable FOB Cost</td><td id="t-expfobcost">—</td></tr>
-
-    <tr><td colspan="2" style="color:var(--gold-dim);font-size:10px;letter-spacing:.1em;padding-top:.75rem;padding-bottom:.25rem">DIFFS (Pricing D40–F44)</td></tr>
-    <tr><td style="color:var(--muted)">D40 · Exportável + prêmio 17/18</td><td id="t-d40">—</td></tr>
-    <tr><td style="color:var(--muted)">D41 · Exportável − prêmio 14/16</td><td id="t-d41">—</td></tr>
-    <tr><td style="color:var(--muted)">D43 · Exportável FOB (cts/lb)</td><td id="t-d43">—</td></tr>
-    <tr><td style="color:var(--muted)">D44 · Bica FOT (cts/lb)</td><td id="t-d44">—</td></tr>
-    <tr><td style="color:var(--muted)">F40 · 17/18 Diff (replacement)</td><td id="t-f40">—</td></tr>
-    <tr><td style="color:var(--muted)">F41 · 14/16 Diff (replacement)</td><td id="t-f41">—</td></tr>
-    <tr><td style="color:var(--muted)">F44 · Bica Diff</td><td id="t-f44">—</td></tr>
-  </table>
-
-  </details>
-
-  <!-- RESUMO -->
-  <div class="sec">Resumo da Negociação</div>
-  <div class="resumo-box">
-    <div class="resumo-text" id="resumo-text">Preencha os campos acima para gerar o resumo.</div>
-    <div class="resumo-actions">
-      <button class="btn-copy" id="btn-copy" onclick="copiarResumo()">Copiar texto</button>
-    </div>
-  </div>
-
+  </div><!-- /col-right -->
+</div><!-- /two-col -->
 </div><!-- /panel-0 -->
 
 <!-- ===== PAINEL 2: Preço R$ → Diff ===== -->
@@ -552,7 +564,7 @@ function calcFOB(usd){
    Fórmulas espelham exatamente a aba Pricing da planilha atual
    ============================================================ */
 function calc(){
-  const bags    = +document.getElementById('v-bags').value    ||500;
+  const bags    = +document.getElementById('v-bags').value    ||0;
   const brl     = +document.getElementById('v-preco').value   ||0;
   const usd     = +document.getElementById('v-dolar').value   ||1;
   const kc      = +document.getElementById('v-kc').value      ||0;
