@@ -1012,12 +1012,13 @@ function salvarNegociacao(){
 
   fetch(API_URL, {
     method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(neg)
   })
-  .then(r => r.json())
-  .then(res => {
+  .then(() => {
     fecharModal();
-    if(btn){ btn.textContent = 'Salvo!'; setTimeout(()=>{ btn.textContent='Salvar negociação'; btn.disabled=false; }, 2000); }
+    if(btn){ btn.textContent = 'Salvo! ✓'; setTimeout(()=>{ btn.textContent='Salvar negociação'; btn.disabled=false; }, 2000); }
   })
   .catch(() => {
     fecharModal();
@@ -1086,15 +1087,25 @@ function carregarHist(){
   const lista = document.getElementById('hist-lista');
   if(lista) lista.innerHTML = '<div class="hist-vazio">Carregando...</div>';
 
-  fetch(API_URL)
-    .then(r => r.json())
-    .then(res => {
-      if(res.ok) renderHist(res.data);
-      else lista.innerHTML = '<div class="hist-vazio">Erro ao carregar dados.</div>';
-    })
-    .catch(() => {
-      if(lista) lista.innerHTML = '<div class="hist-vazio">Sem conexão com o servidor.</div>';
-    });
+  // Remove script anterior se existir
+  const old = document.getElementById('jsonp-script');
+  if(old) old.remove();
+
+  // Callback global que o Apps Script vai chamar
+  window._jsonpCallback = function(res){
+    const s = document.getElementById('jsonp-script');
+    if(s) s.remove();
+    if(res && res.ok) renderHist(res.data);
+    else if(lista) lista.innerHTML = '<div class="hist-vazio">Erro ao carregar dados.</div>';
+  };
+
+  const script = document.createElement('script');
+  script.id = 'jsonp-script';
+  script.src = API_URL + '?callback=_jsonpCallback&t=' + Date.now();
+  script.onerror = () => {
+    if(lista) lista.innerHTML = '<div class="hist-vazio">Sem conexão com o servidor.</div>';
+  };
+  document.body.appendChild(script);
 }
 
 function carregarNeg(h){
